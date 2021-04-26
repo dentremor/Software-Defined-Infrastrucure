@@ -91,15 +91,15 @@ dig +noall +answer -x 35.186.224.25:
 
     type master;
 
-    file "/var/cache/bind/db.forward";
+    file "/etc/bind/zones/db.forward";
 
     };
 
-  zone "103.75.62.141.in-addr.arpa“ {
+  zone "103.75.62.141.in-addr.arpa" {
 
     type master;
 
-    file "/var/cache/bind/db.rev-local";
+    file "/etc/bind/zones/db.rev-local";
 
     };
 
@@ -139,8 +139,8 @@ With this information we can adjust our file `zones/db.forward` which looks like
 ;; db.forward
 ;; Forward lookup zone
 
-$TTL 604800
-
+$TTL 604800 
+$ORIGIN mi.hdm-stuttgart.de.
 @                    IN            SOA            ns4.mi.hdm-stuttgart.de. mail.mi.hdm-stuttgart.de. (
 
                                                          01
@@ -151,20 +151,18 @@ $TTL 604800
 
                                                          4W
 
-                                                         3H )
+                                                         3H) 
 
-@                                IN            NS            ns4.mi.hdm-stuttgart.de.
+@                                IN            NS                  ns4.mi.hdm-stuttgart.de.
 
-ns4.mi.hdm-stuttgart.de.         IN            A             141.62.75.104
+ns4                              IN            A                   141.62.75.104
 
-www4-1                           IN            CNAME         ns4.mi.hdm-stuttgart.de.
+www4-1                           IN            CNAME               ns4
 
-www4-2                           IN            CNAME         ns4.mi.hdm-stuttgart.de.
-
-
+www4-2                           IN            CNAME               ns4
 ```
 
-##### 1.2.3.1 Configure reverse zone
+##### 1.2.3.2 Configure reverse zone
 
 With the information we became above from the dig command, we can configure our reverse zone:
 ```
@@ -189,4 +187,33 @@ $TTL 604800
 
 ns4.mi.hdm-stuttgart.de.       IN            A             141.62.75.104
 
+```
+
+##### 1.2.4 Forwarders
+
+To add forward entry for `www.w3.org` we need the IP-adress which this domain is refering to:
+```bash
+dig +nocmd www.w3.org +noall +answer
+  www.w3.org.		247	IN	A	128.30.52.100
+```
+
+Now we can add the forwarder in the file `/etc/bind/named.conf.options`:
+```
+forwarders {
+	141.62.75.103;
+  128.30.52.100;
+};
+```
+
+##### 1.2.5 Set mail exchange record
+
+For this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
+```
+mi.hdm-stuttgart.de.             IN            MX          10      ns4.mi.hdm-stuttgart.de.
+```
+
+Test the record via `dig`:
+```bash
+dig +noall +answer mx1.hdm-stuttgart.de.:
+  mx1.hdm-stuttgart.de.	2714	IN	A	141.62.1.22
 ```
