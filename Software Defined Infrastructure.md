@@ -1,5 +1,4 @@
 # Software Defined Infrastructure
-
 ## 1. DNS 
 
 ### 1.1 Queriyng DNS data
@@ -120,7 +119,74 @@ dig +noall +answer -x 35.186.224.25:
 
   In the first step we need to change our directory to
   ```bash 
-  cd /var/cache/bind
+  cd /etc/bind
+  mkdir zones
   ```
-  We start to configure our forward lookup zone `bind/db.forward` with ```bash vi db.forward```
+##### 1.2.3.1 Configure forward zone
+  We start to configure our forward lookup zone `zones/db.forward` with 
+```bash 
+  vim db.forward
+  ```
 
+To get the host record we need to `dig` sdi4a.mi.hdm-stuttgart.de.
+
+```bash
+dig +noall +answer sdi4a.mi.hdm-stuttgart.de.:
+  sdi4a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.104
+```
+With this information we can adjust our file `zones/db.forward` which looks like the following
+```
+;; db.forward
+;; Forward lookup zone
+
+$TTL 604800
+
+@                    IN            SOA            ns4.mi.hdm-stuttgart.de. mail.mi.hdm-stuttgart.de. (
+
+                                                         01
+
+                                                         9H
+
+                                                         3H
+
+                                                         4W
+
+                                                         3H )
+
+@                                IN            NS            ns4.mi.hdm-stuttgart.de.
+
+ns4.mi.hdm-stuttgart.de.         IN            A             141.62.75.104
+
+www4-1                           IN            CNAME         ns4.mi.hdm-stuttgart.de.
+
+www4-2                           IN            CNAME         ns4.mi.hdm-stuttgart.de.
+
+
+```
+
+##### 1.2.3.1 Configure reverse zone
+
+With the information we became above from the dig command, we can configure our reverse zone:
+```
+;; db.rev-local
+;; reverse lookup zone
+
+$TTL 604800
+
+@                    IN            SOA            ns4.mi.hdm-stuttgart.de. mail.mi.hdm-stuttgart.de. (
+
+                                                         01     ;<serial-number> 
+
+                                                         9H     ;<time-to-refresh>
+
+                                                         3H     ;<time-to-retry>
+
+                                                         4W     ;<serial-to-expire>
+
+                                                         3H )   ;<minimum-TTL>
+
+@                              IN            NS            ns4.mi.hdm-stuttgart.de.
+
+ns4.mi.hdm-stuttgart.de.       IN            A             141.62.75.104
+
+```
