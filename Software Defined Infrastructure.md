@@ -217,3 +217,62 @@ Test the record via `dig`:
 dig +noall +answer mx1.hdm-stuttgart.de.:
   mx1.hdm-stuttgart.de.	2714	IN	A	141.62.1.22
 ```
+
+## Bibliography
+
+
+## 2. LDAP 
+
+### 2.1 Recommended Preparations
+
+#### What is the LDAP Protocol? What is the difference between the two protocols ldap and ldaps?
+"The Lightweight Directory Access Protocol can be used for queriyng and modifying information from distributed directory services." 
+
+The difference between these two protocols are the encrytpion, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via STARTTLS or decrypted and running on default port 389.
+("Editorial", 2021)
+
+#### What does the acronym dc in dc=somedomain, dc=org stand for?
+It stands for domain component and represents the namespaces of an object (Willeke, 2019).
+
+#### What is the role of LDAP objectclass definitions? How do they relate to LDAP schema definitions?
+The ObjectClass is a LDAP Schema element AttributeType (Willeke, 2019).
+
+#### Describe the relationship between LDAP entries and objectClass values.
+Each LDAP Entry in the Directory Information Tree has an ObjectClass attribute. The Values of this attribute can be modified but not removed (Willeke, 2019).
+
+#### Is it possible to dynamically change an entries structure?
+No, the structure must conforms the constraint defined by the LDAP Schema (Willeke, 2019).
+
+#### What does the term “bind to an LDAP” server mean? What is an “anonymous” bind?
+Bind is used to authenticate clients to the directory server.
+
+There are three elements inlude in the request:
+1. LDAP protocol version
+2. Distinguished Name (DN)
+3. Credentials for user authentication
+
+At an anonymous bind the above points 2. and 3. are submitted as an empty string.
+
+(Wilson, -)
+
+#### Do LDAP servers in general support database features like transactions, ACID semantic etc.?
+
+"Lightweight Directory Access Protocol (LDAP) Transactions is define din RFC 5805 and is defined as "Experimental".
+
+As with distinct update operations, each transaction has atomic, consistency, isolation, and durability properties ACID."
+(Willeke, 2017)
+
+#### Explain the term “replication” in an LDAP server context.
+
+For distribution reasons the LDAP-database can be distributed to several servers. There exists one master, on which write-operations are allowed, at the others can only pull the changes from the master (Anonym, 2019).
+
+## Bibliography
+Willeke, J. (various dates). LDAP Wiki 3. May 2021, von https://ldapwiki.com/wiki
+
+Editorial. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol
+
+Bosswell, W. (2003, October 10). ObjectClasses queried 3. May 2021, von https://www.informit.com/articles/article.aspx?p=101405&seqNum=7#:~:text=Domain%20Component%20(DC).,%3DCompany%2Cdc%3Dcom.
+
+Wilson, N. (No datum availabel). The LDAP Bind Operation queried 3. May 2021, von https://ldap.com/the-ldap-bind-operation/
+
+Anonym (2019, September 3). LDAP Wiki 3. May 2021, von https://ldapwiki.com/wiki
