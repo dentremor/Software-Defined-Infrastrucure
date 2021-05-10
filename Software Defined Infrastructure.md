@@ -226,24 +226,35 @@ dig +noall +answer mx1.hdm-stuttgart.de.:
 ### 2.1 Recommended Preparations
 
 #### What is the LDAP Protocol? What is the difference between the two protocols ldap and ldaps?
+```
 "The Lightweight Directory Access Protocol can be used for queriyng and modifying information from distributed directory services." 
 
 The difference between these two protocols are the encrytpion, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via STARTTLS or decrypted and running on default port 389.
-("Editorial", 2021)
+("Editorial - LDAP", 2021)
+```
 
 #### What does the acronym dc in dc=somedomain, dc=org stand for?
+```
 It stands for domain component and represents the namespaces of an object (Willeke, 2019).
+```
 
 #### What is the role of LDAP objectclass definitions? How do they relate to LDAP schema definitions?
+```
 The ObjectClass is a LDAP Schema element AttributeType (Willeke, 2019).
+```
 
 #### Describe the relationship between LDAP entries and objectClass values.
+```
 Each LDAP Entry in the Directory Information Tree has an ObjectClass attribute. The Values of this attribute can be modified but not removed (Willeke, 2019).
+```
 
 #### Is it possible to dynamically change an entries structure?
+```
 No, the structure must conforms the constraint defined by the LDAP Schema (Willeke, 2019).
+```
 
 #### What does the term “bind to an LDAP” server mean? What is an “anonymous” bind?
+```
 Bind is used to authenticate clients to the directory server.
 
 There are three elements inlude in the request:
@@ -254,25 +265,91 @@ There are three elements inlude in the request:
 At an anonymous bind the above points 2. and 3. are submitted as an empty string.
 
 (Wilson, -)
+```
 
 #### Do LDAP servers in general support database features like transactions, ACID semantic etc.?
-
+```
 "Lightweight Directory Access Protocol (LDAP) Transactions is define din RFC 5805 and is defined as "Experimental".
 
 As with distinct update operations, each transaction has atomic, consistency, isolation, and durability properties ACID."
 (Willeke, 2017)
+```
 
 #### Explain the term “replication” in an LDAP server context.
-
+```
 For distribution reasons the LDAP-database can be distributed to several servers. There exists one master, on which write-operations are allowed, at the others can only pull the changes from the master (Anonym, 2019).
+```
+
+#### Why do organizations sometimes prefer LDAP data repositories rather than using relational database systems?
+```
+LDAP is very suitable in cases of high read rates and low write rates (write-once-read-many-times). 
+Furthermore relational databases like SQL requieres a detailed knowledge about the data structure, which isnt the case when it comes to LDAP.
+(ZyTrax, 2019)
+```
+
+
+#### How is the LDIF format being organized? Explain the practical use of LDIF data when running a LDAP service.
+```
+The format is organized with abjects and attributes. The LDIF datas describes the directory structure which is needed for exchange 
+("Editorial - LDIF", 2021)
+```
+
+#### LDAP filters
+
+##### How do LDAP filters work?
+```
+There are several filters in LDAP, with these filters its possible to add criterias to an object search.
+(Föckeler, -)
+```
+
+##### What is the meaning of the term scope?
+```
+The LDAP search scope indicates the set of entries at or below the BaseDN that may be considered potential matches for a SearchRequest (Willeke, 2019).
+```
+
+##### How do predicate based filters connected by logical and/or/not look like?
+```
+And:  (& (...K1...) (...K2...) (...K3...) (...K4...))
+Or:   (| (...K1...) (...K2...) (...K3...) (...K4...)) 
+Not:  (! (...K1...) (...K2...) (...K3...) (...K4...))
+```
+
+#### OpenLDAP server software specific questions
+
+##### What does the term “database backend” refer to with respect to OpenLDAP server implementation?
+```
+Backends do the actual work of storing or retrieving data in response to LDAP requests. Backends may be compiled statically into slapd, or when module support is enabled, they may be dynamically loaded (Open LDAP Foundation, 2021). 
+```
+
+##### Why is LDAP replication important?
+```
+The risk of a failure will be minimized and the traffic load will be reduced.
+```
+##### How do you restrict access to LDAP directories?
+<!-- TODO finish questions. -->
+
 
 ## Bibliography
-Willeke, J. (various dates). LDAP Wiki 3. May 2021, von https://ldapwiki.com/wiki
+Willeke, J. (various dates). LDAP Wiki 3. May 2021, from https://ldapwiki.com/wiki
 
-Editorial. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol
+Editorial - LDAP. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol
 
-Bosswell, W. (2003, October 10). ObjectClasses queried 3. May 2021, von https://www.informit.com/articles/article.aspx?p=101405&seqNum=7#:~:text=Domain%20Component%20(DC).,%3DCompany%2Cdc%3Dcom.
+Editorial - LDIF. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/LDAP_Data_Interchange_Format
 
-Wilson, N. (No datum availabel). The LDAP Bind Operation queried 3. May 2021, von https://ldap.com/the-ldap-bind-operation/
+Bosswell, W. (2003, October 10). ObjectClasses queried 3. May 2021, from https://www.informit.com/articles/article.aspx?p=101405&seqNum=7#:~:text=Domain%20Component%20(DC).,%3DCompany%2Cdc%3Dcom.
 
-Anonym (2019, September 3). LDAP Wiki 3. May 2021, von https://ldapwiki.com/wiki
+Wilson, N. (No datum availabel). The LDAP Bind Operation queried 3. May 2021, from https://ldap.com/the-ldap-bind-operation/
+
+Anonym (2019, September 3). LDAP Wiki 3. May 2021, from https://ldapwiki.com/wiki
+
+ZyTrax Inc. (2019, February 19). LDAP Concepts & Overview 7. May 2021, from http://www.zytrax.com/books/ldap/ch2/
+
+Föckeler, P. (No datum availabel). Das LDAP Scripting Tutorial queried 10. May 2021, from http://www.selfadsi.de/ldap-filter.htm
+
+Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from https://www.openldap.org/doc/admin25/
+
+
+### 2.2 Exercises
+
+#### 2.2.1 Browse an existing LDAP Server
+
