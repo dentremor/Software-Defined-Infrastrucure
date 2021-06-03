@@ -5,7 +5,7 @@
 
 Due to the absence of `dig`, this was installed with the following command 
 ```bash
-apt install dnsutils
+$ apt install dnsutils
 ```
 
 #### 1.1.1 Queriyng www.hdm-stuttgart.de
@@ -13,7 +13,7 @@ apt install dnsutils
 MX:
 
 ```bash
-dig +nocmd hdm-stuttgart.de mx +noall +answer:
+$ dig +nocmd hdm-stuttgart.de mx +noall +answer:
   hdm-stuttgart.de.	2752	IN	MX	10 mx2.hdm-stuttgart.de.
   hdm-stuttgart.de.	2752	IN	MX	10 mx4.hdm-stuttgart.de.
   hdm-stuttgart.de.	2752	IN	MX	10 mx3.hdm-stuttgart.de.
@@ -21,18 +21,18 @@ dig +nocmd hdm-stuttgart.de mx +noall +answer:
 ```
 
 ```bash
-dig +noall +answer 10 mx2.hdm-stuttgart.de.:
+$ dig +noall +answer 10 mx2.hdm-stuttgart.de.:
   mx2.hdm-stuttgart.de.	3197	IN	A	141.62.1.23
 ```
 
 ```bash
-dig +nocmd +noall +answer -x 141.62.1.23:
+$ dig +nocmd +noall +answer -x 141.62.1.23:
   23.1.62.141.in-addr.arpa. 3142	IN	PTR	mx2.hdm-stuttgart.de.
 ```
 
 NS:
 ```bash
-dig +nocmd hdm-stuttgart.de ns +noall +answer:
+$ dig +nocmd hdm-stuttgart.de ns +noall +answer:
   hdm-stuttgart.de.	3590	IN	NS	iz-net-4.hdm-stuttgart.de.
   hdm-stuttgart.de.	3590	IN	NS	iz-net-3.hdm-stuttgart.de
   hdm-stuttgart.de.	3590	IN	NS	dns1.belwue.de.
@@ -41,12 +41,12 @@ dig +nocmd hdm-stuttgart.de ns +noall +answer:
 ```
 
 ```bash
-dig +noall +answer dns1.belwue.de.:
+$ dig +noall +answer dns1.belwue.de.:
   dns1.belwue.de.		86400	IN	A	129.143.2.10
 ```
 
 ```bash
-dig +nocmd +noall +answer -x 129.143.2.10:
+$ dig +nocmd +noall +answer -x 129.143.2.10:
   10.2.143.129.in-addr.arpa. 86400 IN	PTR	dns1.belwue.de.
 ```
 
@@ -54,13 +54,13 @@ dig +nocmd +noall +answer -x 129.143.2.10:
   
 CNAME:
 ```bash
-dig +noall +answer www.spotify.com:
+$ dig +noall +answer www.spotify.com:
   www.spotify.com.	230	IN	CNAME	edge-web-split-geo.dual-gslb.spotify.com.
   edge-web-split-geo.dual-gslb.spotify.com. 80 IN	A 35.186.224.25
 ```
 
 ```bash
-dig +noall +answer -x 35.186.224.25:
+$ dig +noall +answer -x 35.186.224.25:
   25.224.186.35.in-addr.arpa. 120	IN	PTR	25.224.186.35.bc.googleusercontent.com.
 ```
 
@@ -74,7 +74,7 @@ dig +noall +answer -x 35.186.224.25:
 
   In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need the IP-adress of our domain `sdi3a.mi.hdm-stuttgart.de` we want to forward. For that we used the following command 
   ```bash
-  dig +nocmd sdi3a.mi.hdm-stuttgart.de +noall +answer:
+  $ dig +nocmd sdi3a.mi.hdm-stuttgart.de +noall +answer:
     sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
    ```
    Now we can enter the ip-adress in the already mentioned file.
@@ -111,7 +111,7 @@ dig +noall +answer -x 35.186.224.25:
 #### 1.2.2 Create cache directory
 
   ```bash 
-  mkdir -p /var/cache/bind
+  $ mkdir -p /var/cache/bind
   ```
 
 
@@ -119,19 +119,19 @@ dig +noall +answer -x 35.186.224.25:
 
   In the first step we need to change our directory to
   ```bash 
-  cd /etc/bind
-  mkdir zones
+  $ cd /etc/bind
+  $ mkdir zones
   ```
 ##### 1.2.3.1 Configure forward zone
   We start to configure our forward lookup zone `zones/db.forward` with 
 ```bash 
-  vim db.forward
-  ```
+$ vim db.forward
+```
 
 To get the host record we need to `dig` sdi4a.mi.hdm-stuttgart.de.
 
 ```bash
-dig +noall +answer sdi4a.mi.hdm-stuttgart.de.:
+$ dig +noall +answer sdi4a.mi.hdm-stuttgart.de.:
   sdi4a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.104
 ```
 With this information we can adjust our file `zones/db.forward` which looks like the following
@@ -193,7 +193,7 @@ ns4.mi.hdm-stuttgart.de.       IN            A             141.62.75.104
 
 To add forward entry for `www.w3.org` we need the IP-adress which this domain is refering to:
 ```bash
-dig +nocmd www.w3.org +noall +answer
+$ dig +nocmd www.w3.org +noall +answer
   www.w3.org.		247	IN	A	128.30.52.100
 ```
 
@@ -214,7 +214,7 @@ mi.hdm-stuttgart.de.             IN            MX          10      ns4.mi.hdm-st
 
 Test the record via `dig`:
 ```bash
-dig +noall +answer mx1.hdm-stuttgart.de.:
+$ dig +noall +answer mx1.hdm-stuttgart.de.:
   mx1.hdm-stuttgart.de.	2714	IN	A	141.62.1.22
 ```
 
@@ -353,3 +353,201 @@ Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from h
 
 #### 2.2.1 Browse an existing LDAP Server
 
+##### 2.2.1.1 No Authentication vs. Authentication?
+When you are authenticated on the LDPA-server, you can see all datas which belongs to your user. When you are not authenticated you can also see all datas with the exception of the ```matrikelNr```.
+
+
+#### 2.2.2 Set up an OpenLdap server
+First we need to install several packages on our server:
+```bash
+$ install slapd ldap-utils dialog
+```
+To reconfigure ```slapd``` we need to type ```$ dpkg-reconfigure slapd```.
+
+#### 2.2.3 Populating your DIT
+After add all entrys in our tree, it look like the following:
+```
+version: 1
+
+dn: dc=betrayer,dc=com
+objectClass: dcObject
+objectClass: organization
+objectClass: top
+dc: betrayer
+o: betrayer.com
+
+dn: cn=admin,dc=betrayer,dc=com
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: admin
+userPassword:: e1NTSEF9UUpzZm96RVFxVTFadEhGN3VrWE96dDNZRi9hc09LaXY=
+description: LDAP administrator
+
+dn: ou=departments,dc=betrayer,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: departments
+
+dn: ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: software
+
+dn: ou=financial,ou=departments,dc=betrayer,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: financial
+
+dn: ou=devel,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: devel
+
+dn: ou=testing,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: testing
+
+dn: uid=diana,ou=devel,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Diana Smith
+sn: Smith
+uid: diana
+
+dn: uid=daniel,ou=devel,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Daniel Bean
+sn: Bean
+uid: daniel
+userPassword:: e1NNRDV9QlRqWVBrL2tuSjkrUGNIRk1SeUhBWXdCOHFLeGVMQ2I=
+
+dn: uid=tina,ou=testing,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Tina Bean
+sn: Bean
+uid: tina
+
+dn: uid=thomas,ou=testing,ou=software,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Thomas Smith
+sn: Smith
+uid: thomas
+
+dn: uid=frida,ou=financial,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Frida Smith
+sn: Smith
+uid: frida
+
+dn: uid=frederick,ou=financial,ou=departments,dc=betrayer,dc=com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Frederick Bean
+sn: Bean
+uid: frederick
+```
+
+#### 2.2.4 Testing a bind operation as non - admin user
+![alt text](bind_login.png "Screenshot")
+
+#### 2.2.5 Filter based search
+
+All users with a ```uid``` attribute value starting with the letter “b”:
+```
+(uid=b*)
+```
+
+All entries with either a defined ```uid``` attribute or a ```ou``` attribute starting with letter “d”:
+```
+(|(uid=d*)(ou=d*))
+```
+
+All users entries within the whole DIT having a gidNumber value of 100:
+![alt text](gidNumber_equal_100.png "Screenshot")
+
+All users entries within the whole DIT having a gidNumber value greater then 1023:
+![alt text](gidNumber_greater_than_1023.png "Screenshot")
+
+All users entries within the whole DIT having the substring "ei" in their cn attribute:
+![alt text](cn_contains_ei.png "Screenshot")
+
+All users entries within the whole DIT having starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
+![alt text](last.png "Screenshot")
+
+
+#### 2.2.6 Extending an existing entry
+The entry uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com may be extended by the objectclass posixAccount. Construct a LDIF file to add the attributes uidNumber, gidNumber and homeDirectory by a modify/add operation.
+
+```
+uid=bean, ou=devel, ou=software, ou=departments, dc=betrayer, dc=com
+changetype: add
+objectClass: posixAccount
+uidNumber: 42
+gidNumber: 1337
+homeDirectory: /
+```
+
+#### 2.2.7 Accessing LDAP data by a mail client
+![alt text](LDAP-Thunderbird.png "Screenshot")
+
+#### 2.2.8 LDAP configuration
+![alt text](LDAP-Bind-Authentication.png "Screenshot")
+
+#### 2.2.9 LDAP based user login
+##### 2.2.9.1 Test connection to active directory
+```
+$ root@sdi3b:~# telnet sdi3a.mi.hdm-stuttgart.de 389
+```
+```
+Trying 141.62.75.103...
+Connected to sdi3a.mi.hdm-stuttgart.de.
+Escape character is '^]'.
+```
+
+##### 2.2.9.2 Install and configure libpam-ldapd
+```
+$ apt-get install libpam-ldapd
+```
+After the installation a window will open, where we can configure the package.
+
+In the following window we need to enter the hostname to our arctive directories.
+![alt text](pam1.png "Screenshot")
+
+After that we need to enter the distinguished name.
+![alt text](pam2.png "Screenshot")
+
+TEXT
+![alt text](pam3.png "Screenshot")
+
+After the configuration the installation of the package will be finished and we need to reboot the VM.
+
+After that we can run request
+```
+$ id daniel
+uid=42(daniel) gid=1337 Gruppen=1337
+```
+
+
+#### 2.2.10 Backup and recovery / restore
+
+#### 2.2.11 Accessing LDAP by a Java™ application.
+<!-- Is it possible to use Pyhton pretty please -->
+https://www.python-ldap.org/en/python-ldap-3.3.0/
+https://github.com/python-ldap/python-ldap
