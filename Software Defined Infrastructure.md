@@ -555,7 +555,49 @@ $ mkhomedir_helper daniel
 
 #### 2.2.10 Backup and recovery / restore
 
-#### 2.2.11 Accessing LDAP by a Java™ application.
+Create a backup of the OpenLDAP database configuration to an LDIF file. 
+```bash
+$ slapcat -b cn=config -l ldap-config.ldif
+```
+
+Create a backup of the OpenLDAP data. 
+```bash 
+$ slapcat -l ldap-data.ldif
+```
+
+Copy the data and configuration backup from the OpenLDAP provider server to the OpenLDAP consumer server. 
+```bash 
+$ scp {ldap-data.ldif,ldap-config.ldif} root@sdi3b.mi.hdm-stuttgart.de:
+```
+
+Now we need to access our consumer server via ssh.
+```bash
+$ ssh root@sdi3b.mi.hdm-stuttgart.de
+```
+
+Restore the OpenLDAP provider Data and configs on the consumer server.
+Stop the LDAP service.
+```bash 
+$ systemctl stop slapd
+```
+
+Ensure that the LDAP configuration and data directories are empty.
+```bash 
+$ rm -rf /etc/ldap/slapd.d/* 
+$ rm -rf /var/lib/ldap/*
+```
+
+Restore the configuration backup. 
+```bash
+$ slapadd -b cn=config -l /root/ldap-config.ldif -F /etc/ldap/slapd.d/
+```
+
+Restore the LDAP data directories. 
+```bash
+$ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
+```
+
+#### 2.2.11 Accessing LDAP by a Pyhton application.
 <!-- Is it possible to use Pyhton pretty please -->
 https://www.python-ldap.org/en/python-ldap-3.3.0/
 https://github.com/python-ldap/python-ldap
