@@ -1,0 +1,8 @@
+README.md
+setup.py
+ldaper.egg-info/PKG-INFO
+ldaper.egg-info/SOURCES.txt
+ldaper.egg-info/dependency_links.txt
+ldaper.egg-info/entry_points.txt
+ldaper.egg-info/requires.txt
+ldaper.egg-info/top_level.txt

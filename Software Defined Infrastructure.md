@@ -360,7 +360,7 @@ When you are authenticated on the LDPA-server, you can see all datas which belon
 #### 2.2.2 Set up an OpenLdap server
 First we need to install several packages on our server:
 ```bash
-$ install slapd ldap-utils dialog
+$ apt install slapd ldap-utils dialog
 ```
 To reconfigure ```slapd``` we need to type ```$ dpkg-reconfigure slapd```.
 
@@ -465,7 +465,7 @@ uid: frederick
 ```
 
 #### 2.2.4 Testing a bind operation as non - admin user
-![alt text](bind_login.png "Screenshot")
+![alt text](images/bind_login.png "Screenshot")
 
 #### 2.2.5 Filter based search
 
@@ -480,16 +480,16 @@ All entries with either a defined ```uid``` attribute or a ```ou``` attribute st
 ```
 
 All users entries within the whole DIT having a gidNumber value of 100:
-![alt text](gidNumber_equal_100.png "Screenshot")
+![alt text](images/gidNumber_equal_100.png "Screenshot")
 
 All users entries within the whole DIT having a gidNumber value greater then 1023:
-![alt text](gidNumber_greater_than_1023.png "Screenshot")
+![alt text](images/gidNumber_greater_than_1023.png "Screenshot")
 
 All users entries within the whole DIT having the substring "ei" in their cn attribute:
-![alt text](cn_contains_ei.png "Screenshot")
+![alt text](images/cn_contains_ei.png "Screenshot")
 
 All users entries within the whole DIT having starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
-![alt text](last.png "Screenshot")
+![alt text](images/last.png "Screenshot")
 
 
 #### 2.2.6 Extending an existing entry
@@ -505,10 +505,10 @@ homeDirectory: /
 ```
 
 #### 2.2.7 Accessing LDAP data by a mail client
-![alt text](LDAP-Thunderbird.png "Screenshot")
+![alt text](images/LDAP-Thunderbird.png "Screenshot")
 
 #### 2.2.8 LDAP configuration
-![alt text](LDAP-Bind-Authentication.png "Screenshot")
+![alt text](images/LDAP-Bind-Authentication.png "Screenshot")
 
 #### 2.2.9 LDAP based user login
 ##### 2.2.9.1 Test connection to active directory
@@ -528,13 +528,13 @@ $ apt-get install libpam-ldapd
 After the installation a window will open, where we can configure the package.
 
 In the following window we need to enter the hostname to our arctive directories.
-![alt text](pam1.png "Screenshot")
+![alt text](images/pam1.png "Screenshot")
 
 After that we need to enter the distinguished name.
-![alt text](pam2.png "Screenshot")
+![alt text](images/pam2.png "Screenshot")
 
 TEXT
-![alt text](pam3.png "Screenshot")
+![alt text](images/pam3.png "Screenshot")
 
 After the configuration the installation of the package will be finished and we need to reboot the VM.
 
@@ -542,6 +542,14 @@ After that we can run request
 ```
 $ id daniel
 uid=42(daniel) gid=1337 Gruppen=1337
+```
+
+In the last step we need to create a user and a group accordingly, which we need to assign to the user:
+```bash
+$ groupadd -g 1337 betrayer_software_devel
+$ useradd -u 42 daniel
+$ usermod -g betrayer_software_devel daniel
+$ mkhomedir_helper daniel
 ```
 
 
