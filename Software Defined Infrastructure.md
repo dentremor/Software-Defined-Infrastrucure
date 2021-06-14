@@ -601,3 +601,45 @@ $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 <!-- Is it possible to use Pyhton pretty please -->
 https://www.python-ldap.org/en/python-ldap-3.3.0/
 https://github.com/python-ldap/python-ldap
+
+## 2. Apache Web Server
+
+### 2.1 Exercises
+For the following tasks we need the package ```apache2```, which we can install with the following command:
+```bash
+$ aptitude install apache2
+```
+
+### 2.1.1 First Steps
+   
+1. After we install the package apache is running per default and can in our case be queried with ```http://sdi3a.mi.hdm-stuttgart.de/```.
+
+2. When we move the index.html file out of the folder we can discover another page, when we query the adress again. 
+Now we can se an empty table and below that we find the version of our Apache Server, the domain where its hosted and the associated port.
+
+3. In the next step we povide our own simple webpage which looks like the following:
+  ```html
+  <!DOCTYPE html>
+  <html>
+    <body>
+      <h1>TEST</h1>
+    </body>
+  </html>
+  ```
+
+  4. In the next step we install the apache2 documentation with the following command:
+   ``` bash
+   $ apt install apache2-doc
+   ```
+   In our case we can find all related files from the packe ```apache2-doc```:
+   ```bash
+   $ dpkg -L apache2-doc
+   ```
+   The result is a huge list of file which all belongs to the following path: ```/usr/share/doc/apache2-doc/manual/```
+
+  5. In the last task we want host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:
+   ```bash
+  $ pandoc -s -o index.html Software\ Defined\ Infrastructure.md
+  ``` 
+
+  
