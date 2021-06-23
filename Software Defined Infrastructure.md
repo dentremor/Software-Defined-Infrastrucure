@@ -602,19 +602,19 @@ $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 https://www.python-ldap.org/en/python-ldap-3.3.0/
 https://github.com/python-ldap/python-ldap
 
-## 2. Apache Web Server
+## 3. Apache Web Server
 
-### 2.1 Exercises
+### 3.1 Exercises
 For the following tasks we need the package ```apache2```, which we can install with the following command:
 ```bash
 $ aptitude install apache2
 ```
 
-### 2.1.1 First Steps
+### 3.1.1 First Steps
    
 1. After we install the package apache is running per default and can in our case be queried with ```http://sdi3a.mi.hdm-stuttgart.de/```.
 
-2. When we move the index.html file out of the folder we can discover another page, when we query the adress again. 
+2. When we move the index.html file out of the directory we can discover another page, when we query the adress again. 
 Now we can se an empty table and below that we find the version of our Apache Server, the domain where its hosted and the associated port.
 
 3. In the next step we povide our own simple webpage which looks like the following:
@@ -642,4 +642,69 @@ Now we can se an empty table and below that we find the version of our Apache Se
   $ pandoc -s -o index.html Software\ Defined\ Infrastructure.md
   ``` 
 
+  We want to store the index.html later in ```home/sdidoc``` so we need to create this directroy:
+  ```bash
+  $ cd /home
+  $ mkdir sdidoc
+  ```
+
+  After that we can transfer our file from the local machine to our hdm vm:
+  ```bash
+  $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
+  ```
+
+Now we need to adjust our config file in ```/etc/apache2/sites-available/000-default.conf``` with the following terms:
+```
+<Directory /home/sdidoc>
+  Options Indexes FollowSymLinks Includes ExecCGI
+  AllowOverride All
+  Require all granted
+  Allow from all
+</Directory>
+
+Alias "/dh102" "/home/sdidoc"
+Alias "/mh334" "/home/sdidoc"
+```
+
+To make our change effective we need to restart the apache web service:
+```
+$ systemctl reload apache2
+```
+
+### 3.1.2 Virtual hosts
+1. The requiered Aliases were already set in the last task.
+2. sadjfljsaldkj;klsda;jlkdsajf;kl:
+```
+<VirtualHost *:80>
+  ServerName sdi3a.mi.hdm-stuttgart.de
+  ServerAlias manual*
+</VirtualHost>
+```
+
+<!-- ASK GOIK FOR  http://xy123.mi.hdm-stuttgart.de -->
+
+
+### 3.1.3 SSL / TLS Support
+1. The first step ist that we create our private root key whith a bit length of 2048:
+```
+$ openssl genrsa -out rootCA.key 2048
+```
+
+Now we need to sign our certificate:
+```
+$ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
+```
   
+2. To access our created certificate we can transfer the file via scp from the server to our local machine 
+```
+$ scp root@sdi3a.mi.hdm-stuttgart.de:/root/rootCA.pem /home/user/certificates/
+```
+
+<!-- https://datacenteroverlords.com/2012/03/01/creating-your-own-ssl-certificate-authority/ -->
+
+<!-- Ask Goik if the we really need the private key from the server on our local machine -->
+
+
+
+<!-- https://httpd.apache.org/docs/2.4/mod/mod_ldap.html -->
+<!-- go further on SSL/TLS support is dependent....... -->
