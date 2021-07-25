@@ -79,15 +79,15 @@ $ dig +noall +answer -x 35.186.224.25:
    ```
    Now we can enter the ip-adress in the already mentioned file.
 
-#### 1.2.1 Create zones
+#### 1.2.1 Configure the zone file
 
-  To create the foward zone we need to adjust the file `named.conf.local` which should look like following: 
+  To create the forward zone we need to adjust the file `named.conf.local` which should look like following: 
 
   ```bash
   // Do any local configuration here
   //
 
-  zone "forward" {
+  zone "mi.hdm-stuttgart.de" {
 
     type master;
 
@@ -95,7 +95,7 @@ $ dig +noall +answer -x 35.186.224.25:
 
     };
 
-  zone "103.75.62.141.in-addr.arpa" {
+  zone "75.62.141.in-addr.arpa" {
 
     type master;
 
@@ -107,101 +107,92 @@ $ dig +noall +answer -x 35.186.224.25:
   // organization
   //include "/etc/bind/zones.rfc1918";
   ```
-
-#### 1.2.2 Create cache directory
+#### 1.2.2 Configure the zone file
+For our zones we need to enable IPv4 in the File ```/etc/default/bind9``` with the parameter 
+```
+# startup options for the server
+OPTIONS="-4 -u bind"
+```
+#### 1.2.3 Create cache directory
 
   ```bash 
   $ mkdir -p /var/cache/bind
   ```
 
 
-#### 1.2.3 Configure the created zones
+#### 1.2.4 Configure the created zones
 
   In the first step we need to change our directory to
   ```bash 
   $ cd /etc/bind
   $ mkdir zones
   ```
-##### 1.2.3.1 Configure forward zone
+##### 1.2.4.1 Configure forward zone
   We start to configure our forward lookup zone `zones/db.forward` with 
 ```bash 
 $ vim db.forward
 ```
 
-To get the host record we need to `dig` sdi4a.mi.hdm-stuttgart.de.
+To get the host record we need to `dig` sdi3a.mi.hdm-stuttgart.de.
 
 ```bash
-$ dig +noall +answer sdi4a.mi.hdm-stuttgart.de.:
-  sdi4a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.104
+$ dig +noall +answer sdi3a.mi.hdm-stuttgart.de.:
+  sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
 ```
-With this information we can adjust our file `zones/db.forward` which looks like the following
+With this information we can adjust our file `zones/db.forward` which looks like the following:
+
 ```
-;; db.forward
-;; Forward lookup zone
+; db.forward
+; Forward lookup zone
 
 $TTL 604800 
-$ORIGIN mi.hdm-stuttgart.de.
-@                    IN            SOA            ns4.mi.hdm-stuttgart.de. mail.mi.hdm-stuttgart.de. (
+@                    IN            SOA           ns3.mi.hdm-stuttgart.de. kuhn.hdm-stuttgart.de. (
+                         01; 
+                         28800;
+                         7200;
+                         2419200;
+                         86400;
+ )
 
-                                                         01
-
-                                                         9H
-
-                                                         3H
-
-                                                         4W
-
-                                                         3H) 
-
-@                                IN            NS                  ns4.mi.hdm-stuttgart.de.
-
-ns4                              IN            A                   141.62.75.104
-
-www4-1                           IN            CNAME               ns4
-
-www4-2                           IN            CNAME               ns4
+                                               NS                  ns3
+ns3                              IN            A                   141.62.75.103
+sdi3a                            IN            A                   141.62.75.103
+sdidoc.sdi3a                     IN            A                   141.62.75.103
+www                              IN            A                   141.62.75.103
+manual.sdi3a                     IN            A                   141.62.75.103
+www3-1                           IN            CNAME               www
+www3-2                           IN            CNAME               www
+info                             IN            CNAME               www
 ```
 
 ##### 1.2.3.2 Configure reverse zone
 
 With the information we became above from the dig command, we can configure our reverse zone:
+
 ```
-;; db.rev-local
-;; reverse lookup zone
+; db.rev-local
+; reverse lookup zone
 
-$TTL 604800
-
-@                    IN            SOA            ns4.mi.hdm-stuttgart.de. mail.mi.hdm-stuttgart.de. (
-
-                                                         01     ;<serial-number> 
-
-                                                         9H     ;<time-to-refresh>
-
-                                                         3H     ;<time-to-retry>
-
-                                                         4W     ;<serial-to-expire>
-
-                                                         3H )   ;<minimum-TTL>
-
-@                              IN            NS            ns4.mi.hdm-stuttgart.de.
-
-ns4.mi.hdm-stuttgart.de.       IN            A             141.62.75.104
-
+$TTL 604800 
+@                    IN            SOA            ns3.mi.hdm-stuttgart.de. kuhn.hdm-stuttgart.de. (
+                         01; 
+                         28800;
+                         7200;
+                         2419200;
+                         86400;
+ )
+                                   NS            ns3.
+103                  IN            PTR           sdi3a.mi.hdm-stuttgart.de.
 ```
 
 ##### 1.2.4 Forwarders
 
-To add forward entry for `www.w3.org` we need the IP-adress which this domain is refering to:
-```bash
-$ dig +nocmd www.w3.org +noall +answer
-  www.w3.org.		247	IN	A	128.30.52.100
-```
+We use the CloudFlare DNS service, as a forwarder.
 
 Now we can add the forwarder in the file `/etc/bind/named.conf.options`:
 ```
 forwarders {
-	141.62.75.103;
-  128.30.52.100;
+	1.1.1.1
 };
 ```
 
@@ -209,13 +200,28 @@ forwarders {
 
 For this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
 ```
-mi.hdm-stuttgart.de.             IN            MX          10      ns4.mi.hdm-stuttgart.de.
+mail                             IN            MX          10      mx1.hdm-stuttgart.de.
 ```
 
-Test the record via `dig`:
+Test the record via `nslookup`:
 ```bash
-$ dig +noall +answer mx1.hdm-stuttgart.de.:
-  mx1.hdm-stuttgart.de.	2714	IN	A	141.62.1.22
+$ nslookup manual.sdi3a.mi.hdm-stuttgart.de 141.62.75.103
+Server:		141.62.75.103
+Address:	141.62.75.103#53
+
+Name:	manual.sdi3a.mi.hdm-stuttgart.de
+Address: 141.62.75.103
+```
+
+```bash
+$ nslookup -type=ptr 141.62.75.103
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+103.75.62.141.in-addr.arpa	name = sdi3a.medieninformatik.hdm-stuttgart.de.
+
+Authoritative answers can be found from:
 ```
 
 ## Bibliography
@@ -681,7 +687,7 @@ $ systemctl reload apache2
 </VirtualHost>
 ```
 
-<!-- ASK GOIK FOR  http://xy123.mi.hdm-stuttgart.de -->
+<!-- Etwas stimmt mit der Forward oder Reverse zone nicht - nslookup ist nicht moeglich auf sdi3a.mi.hdm-stuttgart.de -->
 
 
 ### 3.1.3 SSL / TLS Support
@@ -708,3 +714,5 @@ $ scp root@sdi3a.mi.hdm-stuttgart.de:/root/rootCA.pem /home/user/certificates/
 
 <!-- https://httpd.apache.org/docs/2.4/mod/mod_ldap.html -->
 <!-- go further on SSL/TLS support is dependent....... -->
+
+<!-- TODO FileCloud letztes Thema! -->
