@@ -81,31 +81,37 @@ $ dig +noall +answer -x 35.186.224.25:
 
 #### 1.2.1 Configure the zone file
 
-  To create the forward zone we need to adjust the file `named.conf.local` which should look like following: 
+  To create the forward zone we need to adjust the file `:named.conf.local` which should look like following: 
 
-  ```bash
-  // Do any local configuration here
-  //
+```bash
+//
+// Do any local configuration here
+//
 
-  zone "mi.hdm-stuttgart.de" {
+zone "mi.hdm-stuttgart.de" {
 
-    type master;
+  type master;
 
-    file "/etc/bind/zones/db.forward";
+  file "/etc/bind/zones/db.forward";
 
-    };
+  allow-transfer { 141.62.75.103; };
 
-  zone "75.62.141.in-addr.arpa" {
+  };
 
-    type master;
 
-    file "/etc/bind/zones/db.rev-local";
+zone "75.62.141.in-addr.arpa" {
 
-    };
+  type master;
 
-  // Consider adding the 1918 zones here, if they are not used in your
-  // organization
-  //include "/etc/bind/zones.rfc1918";
+  file "/etc/bind/zones/db.reverse";
+
+  allow-transfer { 141.62.75.103; };
+
+  };
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
   ```
 #### 1.2.2 Configure the zone file
 For our zones we need to enable IPv4 in the File ```/etc/default/bind9``` with the parameter 
@@ -263,7 +269,7 @@ No, the structure must conforms the constraint defined by the LDAP Schema (Wille
 ```
 Bind is used to authenticate clients to the directory server.
 
-There are three elements inlude in the request:
+There are three elements include in the request:
 1. LDAP protocol version
 2. Distinguished Name (DN)
 3. Credentials for user authentication
@@ -539,7 +545,6 @@ In the following window we need to enter the hostname to our arctive directories
 After that we need to enter the distinguished name.
 ![alt text](images/pam2.png "Screenshot")
 
-TEXT
 ![alt text](images/pam3.png "Screenshot")
 
 After the configuration the installation of the package will be finished and we need to reboot the VM.
@@ -604,7 +609,6 @@ $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
 #### 2.2.11 Accessing LDAP by a Pyhton application.
-<!-- Is it possible to use Pyhton pretty please -->
 https://www.python-ldap.org/en/python-ldap-3.3.0/
 https://github.com/python-ldap/python-ldap
 
@@ -643,7 +647,7 @@ Now we can se an empty table and below that we find the version of our Apache Se
    ```
    The result is a huge list of file which all belongs to the following path: ```/usr/share/doc/apache2-doc/manual/```
 
-  5. In the last task we want host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:
+  5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:
    ```bash
   $ pandoc -s -o index.html Software\ Defined\ Infrastructure.md
   ``` 
@@ -667,9 +671,6 @@ Now we need to adjust our config file in ```/etc/apache2/sites-available/000-def
   Require all granted
   Allow from all
 </Directory>
-
-Alias "/dh102" "/home/sdidoc"
-Alias "/mh334" "/home/sdidoc"
 ```
 
 To make our change effective we need to restart the apache web service:
@@ -678,41 +679,137 @@ $ systemctl reload apache2
 ```
 
 ### 3.1.2 Virtual hosts
-1. The requiered Aliases were already set in the last task.
-2. sadjfljsaldkj;klsda;jlkdsajf;kl:
+To realize virtual hosts we need to create a .con file in ```/etc/apache2/sites-available```, the config in this file should look like the following:
+   ```
+  <VirtualHost *:80>
+      ServerAdmin dh102@hdm-stuttgart.de
+      ServerName sdi3a.mi.hdm-stuttgart.de
+      ServerAlias dh102.sdi3a.mi.hdm-stuttgart.de
+      DocumentRoot /home/sdidoc/
+      ErrorLog ${APACHE_LOG_DIR}/error.log
+      CustomLog ${APACHE_LOG_DIR}/access.log combined
+  </VirtualHost>
+   ```
+Now the side must be enabled with ```$ a2ensite dh102.conf``` and add the follwing code to ```/etc/apache2/apache2.conf```:   
 ```
-<VirtualHost *:80>
-  ServerName sdi3a.mi.hdm-stuttgart.de
-  ServerAlias manual*
-</VirtualHost>
+<Directory /home/sdidoc/>
+        AllowOverride None
+        Require all granted
+        Options Indexes FollowSymLinks
+</Directory>
 ```
 
-<!-- Etwas stimmt mit der Forward oder Reverse zone nicht - nslookup ist nicht moeglich auf sdi3a.mi.hdm-stuttgart.de -->
+Now it is important to grant apache2 the access to the directory where our ```index.html``` is placed:
+```$ chown -R www-data /home/sdidoc```
 
+To access the webpage from a local machine, we need to give our local machine the relevant information to reach the page.
+This can be done by enter the information on our local machine with ```$ sudo vim /etc/hosts```:
+```
+141.62.75.103 sdi3a.mi.hdm-stuttgart.de dh102.sdi3a.mi.hdm-stuttgart.de
+```
+
+To setup the ```manual.sdi3a.mi.hdm-stuttgart.de``` we can copy our first .conf file, enable it and register the information on localhost.
 
 ### 3.1.3 SSL / TLS Support
-1. The first step ist that we create our private root key whith a bit length of 2048:
+The first step ist that we need to create our private root key whith a bit length of 2048:
 ```
 $ openssl genrsa -out rootCA.key 2048
+```
+
+For security reasons we should encrypt our key
+```
+$ openssl genrsa -des3 -out rootCA.key 2048
+```
+
+With our ```rootCA.key``` we can now self-sign a certificate
+```
+$ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
+```
+
+The above command starts an interactive script, which in our case looked like the following after processing:
+```
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:DE
+State or Province Name (full name) [Some-State]:Baden-Württemberg
+Locality Name (eg, city) []:Portland
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Hochschule der Medien
+Organizational Unit Name (eg, section) []:MI-Member
+Common Name (eg, YOUR name) []:dh102
+Email Address []:dh102@hdm-stuttgart.de
+```
+
+To access our created certificate we can transfer the file via scp from the server to our local machine:
+```
+$ scp root@sdi3a.mi.hdm-stuttgart.de:/root/ssl-cert/rootCA.pem /home/user/certificates/
+```
+Now we can import the CA certificate into our Firefox browser.
+
+In the next step we need to create a certificate for our webpage (device). We starting again with the key:
+```bash
+$ openssl genrsa -out device.key 2048
+```
+
+Now we can create our device certificate:
+
+```bash
+$ openssl req -new -key device.key -out device.csr
+```
+
+The interactive script starts again and we go through it preatty much the same as before, but we need to ensure that the commone name match the ip-adress from the machine.
+
+```
+Common Name (eg, YOUR name) []: 141.62.75.103
+```
+
+So that we have our CA and the device certificate we are able to sign it:
+```bash
+openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
 ```
 
 Now we need to sign our certificate:
 ```
 $ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
 ```
-  
-2. To access our created certificate we can transfer the file via scp from the server to our local machine 
+
+Enabling the apache SSL module:
 ```
-$ scp root@sdi3a.mi.hdm-stuttgart.de:/root/rootCA.pem /home/user/certificates/
+$ a2enmod ssl
 ```
 
-<!-- https://datacenteroverlords.com/2012/03/01/creating-your-own-ssl-certificate-authority/ -->
+In the last step we need to adjust our configuration from the previous task ```/etc/apache2/sites-available/manual.conf```:
+```
+<VirtualHost *:443>
+    ServerAdmin dh102@hdm-stuttgart.de
+    ServerName sdi3a.mi.hdm-stuttgart.de
+    ServerAlias manual.sdi3a.mi.hdm-stuttgart.de
+    DocumentRoot /home/sdidoc/
+    SSLEngine on
+    SSLCertificateFile "/root/ssl-cert/device.crt"
+    SSLCertificateKeyFile "/root/ssl-cert/device.key"
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+To make the change effective we need to restart the service:
+```
+systemctl restart apache2.service
+```
 
-<!-- Ask Goik if the we really need the private key from the server on our local machine -->
+### 3.1.3 LDAP authentication
+
+For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
+
+To use LDAP with Apache Web Server, we need to enable it:
+```bash
+$ a2enmod ldap
+```
 
 
-
-<!-- https://httpd.apache.org/docs/2.4/mod/mod_ldap.html -->
-<!-- go further on SSL/TLS support is dependent....... -->
 
 <!-- TODO FileCloud letztes Thema! -->
