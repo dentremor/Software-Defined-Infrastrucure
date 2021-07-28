@@ -807,7 +807,46 @@ For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
 To use LDAP with Apache Web Server, we need to enable it:
 ```bash
-$ a2enmod ldap
+$ a2enmod authnz_ldap
+```
+
+We can copy one of our previous .conf files and edit the config, which should look like the following:
+```
+<VirtualHost *:443>
+    ServerAdmin dh102@hdm-stuttgart.de
+    DocumentRoot /home/sdidoc/
+    SSLEngine on
+    SSLCertificateFile "/root/ssl-cert/device.crt"
+    SSLCertificateKeyFile "/root/ssl-cert/device.key"
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+  <Directory "/home/sdidoc">
+      Options Indexes FollowSymlinks
+      AuthType Basic
+      AuthName "Apache LDAP authentication"
+      AuthBasicAuthoritative Off
+      AuthBasicProvider ldap
+      AuthLDAPURL "ldap://141.62.75.103/uid=daniel,ou=devel,ou=software,ou=departments,dc=betrayer,dc=com?sAMAccountName?sub?(objectClass=*)"
+      AuthLDAPBindDN "uid=daniel,ou=devel,ou=software,ou=departments,dc=betrayer,dc=com"
+      AuthLDAPBindPassword test1
+      Require valid-user
+  </Directory>
+</VirtualHost>
+```
+
+Enabling the site and restart apache web server.
+```
+$ a2ensite daniel.conf 
+$ systemctl restart apache2.service
+```
+
+Now it should be possible to enter ```https://141.62.75.103/test``` in our browser and login.
+
+### 3.1.4 Mysql™ database administration
+
+To install MySQL, php and phpMyadmin we can use:
+```bash
+$ apt install mysql-server php phpmyadmin
 ```
 
 
