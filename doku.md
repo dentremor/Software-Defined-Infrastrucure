@@ -613,14 +613,16 @@ $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
 #### 2.2.11 Accessing LDAP by a Pyhton application.
-Please find the ```application``` and the associated ```README.md``` in the Python directory. 
+Please find the ```application``` and the associated ```README.md``` in the Python directory.
 
-The following frameworks were used:
+![alt text](images/ldaper9.png "Screenshot")
+
+The following framework were used:
 ```
 https://www.python-ldap.org/en/python-ldap-3.3.0/
 ```
 ```
-https://github.com/python-ldap/python-ldap
+https://click.palletsprojects.com/en/8.0.x/
 ```
 
 ## 3. Apache Web Server
@@ -759,7 +761,11 @@ To access our created certificate we can transfer the file via scp from the serv
 ```
 $ scp root@sdi3a.mi.hdm-stuttgart.de:/root/ssl-cert/rootCA.pem /home/user/certificates/
 ```
-Now we can import the CA certificate into our Firefox browser.
+To import the root ca on the local machine: 
+```
+$ sudo cp /home/user/certificates/rootCA.pem /etc/pki/ca-trust/source/anchors/sdi3a
+$ sudo update-ca-trust
+```
 
 In the next step we need to create a certificate for our webpage (device). We starting again with the key:
 ```
