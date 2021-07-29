@@ -663,7 +663,7 @@ Now we can se an empty table and below that we find the version of our Apache Se
   $ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md
   ``` 
 
-  We want to store the index.html later in ```home/sdidoc``` so we need to create this directroy:
+  We want to store the index.html later in ```home/sdidoc``` so we need to create this directory:
   ```
   $ cd /home
   $ mkdir sdidoc
