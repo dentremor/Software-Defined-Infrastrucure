@@ -328,7 +328,7 @@ Not:  (! (...K1...) (...K2...) (...K3...) (...K4...))
 
 ##### What does the term “database backend” refer to with respect to OpenLDAP server implementation?
 ```
-Backends do the actual work of storing or retrieving data in response to LDAP requests. Backends may be compiled statically into slapd, or when module support is enabled, they may be dynamically loaded (Open LDAP Foundation, 2021). 
+Backend do the actual work of storing or retrieving data in response to LDAP requests. Backend may be compiled statically into slapd, or when module support is enabled, they may be dynamically loaded (Open LDAP Foundation, 2021). 
 ```
 
 ##### Why is LDAP replication important?
@@ -369,7 +369,7 @@ First we need to install several packages on our server:
 ```
 $ apt install slapd ldap-utils dialog
 ```
-To reconfigure ```slapd``` we need to type 
+To reconfigure ```slapd``` we need to type into our console:
 ```
 $ dpkg-reconfigure slapd
 ```
@@ -481,7 +481,7 @@ uid: frederick
 
 #### 2.2.5 Filter based search
 
-All users with a ```uid``` attribute value starting with the letter “b”:
+All users with an ```uid``` attribute value starting with the letter “b”:
 ```
 (uid=b*)
 ```
@@ -500,12 +500,12 @@ All users entries within the whole DIT having a gidNumber value greater then 102
 All users entries within the whole DIT having the substring "ei" in their cn attribute:
 ![alt text](images/cn_contains_ei.png "Screenshot")
 
-All users entries within the whole DIT having starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
+All users entries within the whole DIT starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
 ![alt text](images/last.png "Screenshot")
 
 
 #### 2.2.6 Extending an existing entry
-The entry uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com may be extended by the objectclass posixAccount. Construct a LDIF file to add the attributes uidNumber, gidNumber and homeDirectory by a modify/add operation.
+The entry ```uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com``` may be extended by the ```objectclass=posixAccount```. Construct a LDIF file to add the attributes ```uidNumber```, ```gidNumber``` and ```homeDirectory``` by a modify/add operation:
 
 ```
 uid=bean, ou=devel, ou=software, ou=departments, dc=betrayer, dc=com
@@ -513,7 +513,7 @@ changetype: add
 objectClass: posixAccount
 uidNumber: 42
 gidNumber: 1337
-homeDirectory: /
+homeDirectory: /home/daniel
 ```
 
 #### 2.2.7 Accessing LDAP data by a mail client
@@ -524,9 +524,11 @@ homeDirectory: /
 
 #### 2.2.9 LDAP based user login
 ##### 2.2.9.1 Test connection to active directory
+Use the following command:
 ```
 $ root@sdi3b:~# telnet sdi3a.mi.hdm-stuttgart.de 389
 ```
+Then something like this should appear:
 ```
 Trying 141.62.75.103...
 Connected to sdi3a.mi.hdm-stuttgart.de.
@@ -551,7 +553,7 @@ After the configuration the installation of the package will be finished and we 
 
 After that we can run request
 ```
-$ id daniel
+id daniel
 uid=42(daniel) gid=1337 Gruppen=1337
 ```
 
@@ -566,7 +568,7 @@ $ mkhomedir_helper daniel
 
 #### 2.2.10 Backup and recovery / restore
 
-Create a backup of the OpenLDAP database configuration to an LDIF file. 
+Create a backup of the OpenLDAP database configuration in a LDIF-file. 
 ```
 $ slapcat -b cn=config -l ldap-config.ldif
 ```
@@ -578,7 +580,7 @@ $ slapcat -l ldap-data.ldif
 
 Copy the data and configuration backup from the OpenLDAP provider server to the OpenLDAP consumer server. 
 ```
-$ scp {ldap-data.ldif,ldap-config.ldif} root@sdi3b.mi.hdm-stuttgart.de:
+$ scp {ldap-data.ldif,ldap-config.ldif} root@sdi3b.mi.hdm-stuttgart.de
 ```
 
 Now we need to access our consumer server via ssh.
@@ -587,23 +589,23 @@ $ ssh root@sdi3b.mi.hdm-stuttgart.de
 ```
 
 Restore the OpenLDAP provider Data and configs on the consumer server.
-Stop the LDAP service.
+Stop the LDAP service:
 ```
 $ systemctl stop slapd
 ```
 
-Ensure that the LDAP configuration and data directories are empty.
+Ensure that the LDAP configuration and data directories are empty:
 ```
 $ rm -rf /etc/ldap/slapd.d/* 
 $ rm -rf /var/lib/ldap/*
 ```
 
-Restore the configuration backup. 
+Restore the configuration backup:
 ```
 $ slapadd -b cn=config -l /root/ldap-config.ldif -F /etc/ldap/slapd.d/
 ```
 
-Restore the LDAP data directories. 
+Restore the LDAP data directories:
 ```
 $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
@@ -633,7 +635,7 @@ $ aptitude install apache2
    
 1. After we install the package apache is running per default and can in our case be queried with ```http://sdi3a.mi.hdm-stuttgart.de/```.
 
-2. When we move the index.html file out of the directory we can discover another page, when we query the adress again. 
+2. When we move the index.html file out of the directory we can discover another page, for this we need to query the adress again. 
 Now we can se an empty table and below that we find the version of our Apache Server, the domain where its hosted and the associated port.
 
 3. In the next step we povide our own simple webpage which looks like the following:
@@ -667,12 +669,12 @@ Now we can se an empty table and below that we find the version of our Apache Se
   $ mkdir sdidoc
   ```
 
-  After that we can transfer our file from the local machine to our hdm vm:
+  Now we can transfer our file from the local machine to our server:
   ```
   $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
   ```
 
-Now we need to adjust our config file in ```/etc/apache2/sites-available/000-default.conf``` with the following terms:
+Last but not least we need to adjust our config file in ```/etc/apache2/sites-available/000-default.conf``` with the following terms:
 ```
 <Directory /home/sdidoc>
   Options Indexes FollowSymLinks Includes ExecCGI
@@ -699,7 +701,7 @@ To realize virtual hosts we need to create a .con file in ```/etc/apache2/sites-
       CustomLog ${APACHE_LOG_DIR}/access.log combined
   </VirtualHost>
    ```
-Now the side must be enabled with ```$ a2ensite dh102.conf``` and add the follwing code to ```/etc/apache2/apache2.conf```:   
+Now the side must be enabled with ```$ a2ensite dh102.conf``` and add the follwing instructions to ```/etc/apache2/apache2.conf```:   
 ```
 <Directory /home/sdidoc/>
         AllowOverride None
@@ -725,12 +727,12 @@ The first step ist that we need to create our private root key whith a bit lengt
 $ openssl genrsa -out rootCA.key 2048
 ```
 
-For security reasons we should encrypt our key
+For security reasons we should encrypt our key:
 ```
 $ openssl genrsa -des3 -out rootCA.key 2048
 ```
 
-With our ```rootCA.key``` we can now self-sign a certificate
+With our ```rootCA.key``` we can now self-sign a certificate:
 ```
 $ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
 ```
@@ -774,13 +776,13 @@ Now we can create our device certificate:
 $ openssl req -new -key device.key -out device.csr
 ```
 
-The interactive script starts again and we go through it preatty much the same as before, but we need to ensure that the commone name match the ip-adress from the machine.
+The interactive script starts again and we go through it preatty much the same as before, but we need to ensure that the common name match the ip-adress from the machine.
 
 ```
 Common Name (eg, YOUR name) []: 141.62.75.103
 ```
 
-So that we have our CA and the device certificate we are able to sign it:
+Now that we have our CA and the device certificate we are able to sign it:
 ```
 openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
 ```
