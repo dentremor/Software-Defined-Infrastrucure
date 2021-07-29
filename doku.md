@@ -747,11 +747,11 @@ For some fields there will be a default value,
 If you enter '.', the field will be left blank.
 -----
 Country Name (2 letter code) [AU]:DE
-State or Province Name (full name) [Some-State]:Baden-Württemberg
-Locality Name (eg, city) []:Portland
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Hochschule der Medien
-Organizational Unit Name (eg, section) []:MI-Member
-Common Name (eg, YOUR name) []:dh102
+State or Province Name (full name) [Some-State]:Baden Wuerttemberg
+Locality Name (eg, city) []:Stuttgart
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:HdM
+Organizational Unit Name (eg, section) []:MI
+Common Name (eg, YOUR name) []:manual.sdi3a.mi.hdm-stuttgart.de
 Email Address []:dh102@hdm-stuttgart.de
 ```
 
@@ -765,22 +765,18 @@ $ sudo cp /home/user/certificates/rootCA.pem /etc/pki/ca-trust/source/anchors/sd
 $ sudo update-ca-trust
 ```
 
-In the next step we need to create a certificate for our webpage (device). We starting again with the key:
+In the next step we need to create a certificate for our webpage. We starting again with the key:
 ```
 $ openssl genrsa -out device.key 2048
 ```
 
-Now we can create our device certificate:
+Now we can create our webpage certificate:
 
 ```
 $ openssl req -new -key device.key -out device.csr
 ```
 
-The interactive script starts again and we go through it pretty much the same as before, but this time we need to ensure that the common name match the ip-adress from the machine.
-
-```
-Common Name (eg, YOUR name) []: 141.62.75.103
-```
+The interactive script starts again and we go through it pretty much the same as before.
 
 Now that we have our CA and the device certificate we are able to sign it:
 ```
@@ -810,6 +806,9 @@ To make the change effective we need to restart the service:
 ```
 systemctl restart apache2.service
 ```
+
+Now the Connection is secure:
+![](images/certificate1.png "Screenshot")
 
 ### LDAP authentication
 
@@ -850,7 +849,7 @@ $ a2ensite daniel.conf
 $ systemctl restart apache2.service
 ```
 
-Now it should be possible to enter ```https://141.62.75.103/test``` in our browser and login.
+Now it should be possible to enter ```https://sdi3a.mi.hdm-stuttgart.de/test``` in our browser and login.
 
 ### Mysql™ database administration
 
