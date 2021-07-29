@@ -1,14 +1,14 @@
 # Software Defined Infrastructure
-## 1. DNS 
+## DNS 
 
-### 1.1 Queriyng DNS data
+### Queriyng DNS data
 
 Due to the absence of `dig`, this was installed with the following command:
 ```bash
 $ apt install dnsutils
 ```
 
-#### 1.1.1 Queriyng www.hdm-stuttgart.de
+#### Queriyng www.hdm-stuttgart.de
 
 MX:
 
@@ -50,7 +50,7 @@ $ dig +nocmd +noall +answer -x 129.143.2.10:
   10.2.143.129.in-addr.arpa. 86400 IN	PTR	dns1.belwue.de.
 ```
 
-### 1.1.2 Queriyng www.spotify.com
+### Queriyng www.spotify.com
   
 CNAME:
 ```bash
@@ -65,7 +65,7 @@ $ dig +noall +answer -x 35.186.224.25:
 ```
 
 
-### 1.2 Installing Bind
+### Installing Bind
   With the following command we can install ```bind9``` and ```bind9utils```:
   ```bash
   apt install bind9 bind9utils
@@ -78,7 +78,7 @@ $ dig +noall +answer -x 35.186.224.25:
    ```
    Now we can enter the IP-address in the already mentioned file.
 
-#### 1.2.1 Configure the zone file
+#### Configure the zone file
 
   To register our zones (which we will create later) we need to adjust the file `:named.conf.local` which should look like the following: 
 
@@ -112,27 +112,27 @@ zone "75.62.141.in-addr.arpa" {
 // organization
 //include "/etc/bind/zones.rfc1918";
   ```
-#### 1.2.2 Configure the zone file
+#### Configure the zone file
 For our zones we need to enable IPv4 in the File ```/etc/default/bind9``` with the parameter:
 ```
 # startup options for the server
 OPTIONS="-4 -u bind"
 ```
-#### 1.2.3 Create cache directory
+#### Create cache directory
 
   ```
   $ mkdir -p /var/cache/bind
   ```
 
 
-#### 1.2.4 Configure the created zones
+#### Configure the created zones
 
   In the first step we need to change our directory to
   ``` 
   $ cd /etc/bind
   $ mkdir zones
   ```
-##### 1.2.4.1 Configure forward zone
+##### Configure forward zone
   We start to configure our forward lookup zone `zones/db.forward` with 
 ``` 
 $ vim db.forward
@@ -170,7 +170,7 @@ www3-2                           IN            CNAME               www
 info                             IN            CNAME               www
 ```
 
-##### 1.2.3.2 Configure reverse zone
+##### Configure reverse zone
 
 With the information we became above from the dig command, we can configure our reverse zone:
 
@@ -190,7 +190,7 @@ $TTL 604800
 103                  IN            PTR           sdi3a.mi.hdm-stuttgart.de.
 ```
 
-##### 1.2.4 Forwarders
+##### Forwarders
 
 We use the CloudFlare DNS service, as a forwarder.
 
@@ -201,7 +201,7 @@ forwarders {
 };
 ```
 
-##### 1.2.5 Set mail exchange record
+##### Set mail exchange record
 
 To achieve this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
 ```
@@ -231,9 +231,9 @@ Address:	127.0.0.53#53
 ## Bibliography
 
 
-## 2. LDAP 
+## LDAP 
 
-### 2.1 Recommended Preparations
+### Recommended Preparations
 
 #### What is the LDAP Protocol? What is the difference between the two protocols ldap and ldaps?
 ```
@@ -336,7 +336,7 @@ Backend do the actual work of storing or retrieving data in response to LDAP req
 The risk of a failure will be minimized and the traffic load will be reduced.
 ```
 
-## Bibliography
+#### Bibliography
 Willeke, J. (various dates). LDAP Wiki 3. May 2021, from https://ldapwiki.com/wiki
 
 Editorial - LDAP. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol
@@ -356,15 +356,15 @@ Föckeler, P. (No datum available). Das LDAP Scripting Tutorial queried 10. May 
 Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from https://www.openldap.org/doc/admin25/
 
 
-### 2.2 Exercises
+### Exercises
 
-#### 2.2.1 Browse an existing LDAP Server
+#### Browse an existing LDAP Server
 
-##### 2.2.1.1 No Authentication vs. Authentication?
+##### No Authentication vs. Authentication?
 When you are authenticated on the LDPA-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data with the exception of the ```matrikelNr```.
 
 
-#### 2.2.2 Set up an OpenLdap server
+#### Set up an OpenLdap server
 First we need to install several packages on our server:
 ```
 $ apt install slapd ldap-utils dialog
@@ -376,7 +376,7 @@ $ dpkg-reconfigure slapd
 ```DNS-Domainname: sdi3a.mi.hdm-stuttgart.de```
 
 
-#### 2.2.3 Populating your DIT
+#### Populating your DIT
 After add all entry's in our tree, it look like the following:
 ```
 version: 1
@@ -476,10 +476,10 @@ sn: Bean
 uid: frederick
 ```
 
-#### 2.2.4 Testing a bind operation as non - admin user
-![alt text](images/bind_login.png "Screenshot")
+#### Testing a bind operation as non - admin user
+![](images/bind_login.png "Screenshot")
 
-#### 2.2.5 Filter based search
+#### Filter based search
 
 All users with an ```uid``` attribute value starting with the letter “b”:
 ```
@@ -492,19 +492,19 @@ All entries with either a defined ```uid``` attribute or a ```ou``` attribute st
 ```
 
 All users entries within the whole DIT having a gidNumber value of 100:
-![alt text](images/gidNumber_equal_100.png "Screenshot")
+![](images/gidNumber_equal_100.png "Screenshot")
 
 All users entries within the whole DIT having a gidNumber value greater then 1023:
-![alt text](images/gidNumber_greater_than_1023.png "Screenshot")
+![](images/gidNumber_greater_than_1023.png "Screenshot")
 
 All users entries within the whole DIT having the substring "ei" in their cn attribute:
-![alt text](images/cn_contains_ei.png "Screenshot")
+![](images/cn_contains_ei.png "Screenshot")
 
 All users entries within the whole DIT starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
-![alt text](images/last.png "Screenshot")
+![](images/last.png "Screenshot")
 
 
-#### 2.2.6 Extending an existing entry
+#### Extending an existing entry
 The entry ```uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com``` may be extended by the ```objectclass=posixAccount```. Construct a LDIF file to add the attributes ```uidNumber```, ```gidNumber``` and ```homeDirectory``` by a modify/add operation:
 
 ```
@@ -516,14 +516,14 @@ gidNumber: 1337
 homeDirectory: /home/daniel
 ```
 
-#### 2.2.7 Accessing LDAP data by a mail client
-![alt text](images/LDAP-Thunderbird.png "Screenshot")
+#### Accessing LDAP data by a mail client
+![](images/LDAP-Thunderbird.png "Screenshot")
 
-#### 2.2.8 LDAP configuration
-![alt text](images/LDAP-Bind-Authentication.png "Screenshot")
+#### LDAP configuration
+![](images/LDAP-Bind-Authentication.png "Screenshot")
 
-#### 2.2.9 LDAP based user login
-##### 2.2.9.1 Test connection to active directory
+#### LDAP based user login
+##### Test connection to active directory
 Use the following command:
 ```
 $ root@sdi3b:~# telnet sdi3a.mi.hdm-stuttgart.de 389
@@ -535,19 +535,19 @@ Connected to sdi3a.mi.hdm-stuttgart.de.
 Escape character is '^]'.
 ```
 
-##### 2.2.9.2 Install and configure libpam-ldapd
+##### Install and configure libpam-ldapd
 ```
 $ apt-get install libpam-ldapd
 ```
 After the installation a window will open, where we can configure the package.
 
 In the following window we need to enter the hostname to our active directories.
-![alt text](images/pam1.png "Screenshot")
+![](images/pam1.png "Screenshot")
 
 After that we need to enter the distinguished name.
-![alt text](images/pam2.png "Screenshot")
+![](images/pam2.png "Screenshot")
 
-![alt text](images/pam3.png "Screenshot")
+![](images/pam3.png "Screenshot")
 
 After the configuration the installation of the package will be finished and we need to reboot our server.
 
@@ -566,7 +566,7 @@ $ mkhomedir_helper daniel
 ```
 
 
-#### 2.2.10 Backup and recovery / restore
+#### Backup and recovery / restore
 
 Create a backup of the OpenLDAP database configuration in a LDIF-file. 
 ```
@@ -610,10 +610,10 @@ Restore the LDAP data directories:
 $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
-#### 2.2.11 Accessing LDAP by a Pyhton application.
+#### Accessing LDAP by a Pyhton application.
 Please find the ```application``` and the associated ```README.md``` in the Python directory.
 
-![alt text](images/ldaper9.png "Screenshot")
+![](images/ldaper9.png "Screenshot")
 
 The following framework were used:
 ```
@@ -623,15 +623,15 @@ https://www.python-ldap.org/en/python-ldap-3.3.0/
 https://click.palletsprojects.com/en/8.0.x/
 ```
 
-## 3. Apache Web Server
+## Apache Web Server
 
-### 3.1 Exercises
+### Exercises
 For the following tasks we need the package ```apache2```, which we can install with the following command:
 ```
 $ aptitude install apache2
 ```
 
-### 3.1.1 First Steps
+### First Steps
    
 1. After we install the package apache is running per default and can in our case be queried with ```http://sdi3a.mi.hdm-stuttgart.de/```.
 
@@ -689,7 +689,7 @@ To make our change effective we need to restart the apache web service:
 $ systemctl reload apache2
 ```
 
-### 3.1.2 Virtual hosts
+### Virtual hosts
 To realize virtual hosts we need to create a .con file in ```/etc/apache2/sites-available```, the config in this file should look like the following:
    ```
   <VirtualHost *:80>
@@ -721,7 +721,7 @@ This can be done by enter the information on our local machine with ```$ sudo vi
 
 To setup the ```manual.sdi3a.mi.hdm-stuttgart.de``` we can copy our first .conf file, enable it and register the information on localhost.
 
-### 3.1.3 SSL / TLS Support
+### SSL / TLS Support
 The first step ist that we need to create our private root key whith a bit length of 2048:
 ```
 $ openssl genrsa -out rootCA.key 2048
@@ -811,7 +811,7 @@ To make the change effective we need to restart the service:
 systemctl restart apache2.service
 ```
 
-### 3.1.3 LDAP authentication
+### LDAP authentication
 
 For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
@@ -852,7 +852,7 @@ $ systemctl restart apache2.service
 
 Now it should be possible to enter ```https://141.62.75.103/test``` in our browser and login.
 
-### 3.1.4 Mysql™ database administration
+### Mysql™ database administration
 
 To install ```mysql-server``` use:
 ```
@@ -899,11 +899,11 @@ And finally we can install ```phpMyAdmin```:
 $ apt-get install -t buster-backports phpmyadmin
 ```
 During the installation a dialog should open up:
-![alt text](images/phpmyadmin1.png "Screenshot")
+![](images/phpmyadmin1.png "Screenshot")
 
-![alt text](images/phpmyadmin2.png "Screenshot")
+![](images/phpmyadmin2.png "Screenshot")
 
-![alt text](images/phpmyadmin3.png "Screenshot")
+![](images/phpmyadmin3.png "Screenshot")
 
 Now we need to create a user with which we can log in:
 ```
@@ -919,9 +919,9 @@ $ systemctl restart apache2.service
 ```
 
 Last but not least we can open the following domain and login ```http://sdi3a.mi.hdm-stuttgart.de/phpmyadmin/index.php```:
-![alt text](images/phpmyadmin4.png "Screenshot")
+![](images/phpmyadmin4.png "Screenshot")
 
-### 3.1.5 Providing WEB based user management to your LDAP Servern
+### Providing WEB based user management to your LDAP Servern
 
 To install the LDAP Account Manager we need to download it and forward it to the server via ```scp``` because ```ldap-account-manager``` isn't availabel via the official ```apt``` repositorys:
 
@@ -940,13 +940,13 @@ The default master password for ```Edit general settings``` is ```lam``` and sho
 
 The password for ```Edit server profiles``` is also ```lam```.
 Here we can can edit ```TLS``` and a ```List of valid users```:
-![alt text](images/lam1.png "Screenshot")
-![alt text](images/lam2.png "Screenshot")
+![](images/lam1.png "Screenshot")
+![](images/lam2.png "Screenshot")
 
 After saving this settings we are able to so the our user:
-![alt text](images/lam3.png "Screenshot")
+![](images/lam3.png "Screenshot")
 
-### 3.1.6 Publish your documentation
+### Publish your documentation
 
 Our documentation is written as a .md-file, so we need to convert it with pandoc into a valid .html-file:
 ```bash
@@ -975,13 +975,12 @@ Alias /doc /home/sdidoc/
 ```
 
 Now we can query ```http://sdi3a.mi.hdm-stuttgart.de/doc/```.
-<!-- TODO Docu publishen -->
 
-## 4. Apache Web Server
+## File Cloud
 
-### 4.1 Exercises
+### Exercises
 
-#### 4.1.1 Setup Nextcloud with Apache Web Server
+#### Setup Nextcloud with Apache Web Server
 
 First we need to install packages for apache, mariadb and php:
 
@@ -1036,7 +1035,7 @@ $ systemctl restart apache2.service
 
 Now we can open in our browser ```sdi3a.mi.hdm-stuttgart.de/nextcloud``` which should look like the following:
 
-![alt text](images/nextcloud1.png "Screenshot")
+![](images/nextcloud1.png "Screenshot")
 
 To finish the installation type in the necessary data and click ```Installation abschließen```.
 ```
@@ -1049,17 +1048,17 @@ Database-Name = "nextcloud"
 ```
 
 After we waiting a bit we can enter again ```sdi3a.mi.hdm-stuttgart.de/nextcloud``` and now it should look like the screenshot below:
-![alt text](images/nextcloud2.png "Screenshot")
+![](images/nextcloud2.png "Screenshot")
 
-#### 4.1.2 User authentication with LDAP
+#### User authentication with LDAP
 
 To enable ldap support click on Icon in right top corner then go to ```Apps```:
-![alt text](images/ncldap1.png "Screenshot")
+![](images/ncldap1.png "Screenshot")
 
 Search for the module ```LDAP user and group backend``` and enable it:
-![alt text](images/ncldap2.png "Screenshot")
+![](images/ncldap2.png "Screenshot")
 
 Now we can configure ldap under settings and ```LDAP/AD-Integration```:
-![alt text](images/ncldap3.png "Screenshot")
-![alt text](images/ncldap4.png "Screenshot")
-![alt text](images/ncldap5.png "Screenshot")
+![](images/ncldap3.png "Screenshot")
+![](images/ncldap4.png "Screenshot")
+![](images/ncldap5.png "Screenshot")
