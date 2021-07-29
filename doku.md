@@ -8,7 +8,7 @@
 
 ## DNS
 
-### Queriyng DNS data
+### Querying DNS data
 
 Due to the absence of `dig`, this was installed with the following command:
 
@@ -16,7 +16,7 @@ Due to the absence of `dig`, this was installed with the following command:
 $ apt install dnsutils
 ```
 
-#### Queriyng www.hdm-stuttgart.de
+#### Querying www.hdm-stuttgart.de
 
 MX:
 
@@ -59,7 +59,7 @@ $ dig +nocmd +noall +answer -x 129.143.2.10:
   10.2.143.129.in-addr.arpa. 86400 IN	PTR	dns1.belwue.de.
 ```
 
-### Queriyng www.spotify.com
+### Querying www.spotify.com
 
 CNAME:
 
@@ -213,7 +213,7 @@ $TTL 604800
 
 ##### Forwarders
 
-We use the CloudFlare DNS service, as a forwarder.
+We use the Cloudflare DNS service, as a forwarder.
 
 Add the forwarder in the file `/etc/bind/named.conf.options`:
 
@@ -258,11 +258,11 @@ Address:	127.0.0.53#53
 
 ### Recommended Preparations
 
-#### What is the LDAP Protocol? What is the difference between the two protocols ldap and ldaps?
+#### What is the LDAP Protocol? What is the difference between the two protocols LDAP and ldaps?
 
 "The Lightweight Directory Access Protocol can be used for querying and modifying information from distributed directory services."
 
-The difference between these two protocols are the encryption, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via STARTTLS or decrypted and running on default port 389.
+The difference between these two protocols are the encryption, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via START TLS or decrypted and running on default port 389.
 ("Editorial - LDAP", 2021)
 
 #### What does the acronym dc in dc=somedomain, dc=org stand for?
@@ -312,7 +312,7 @@ LDAP is very suitable in cases of high read rates and low write rates (write-onc
 Furthermore relational databases like SQL requires a detailed knowledge about the data structure, which isn't the case when it comes to LDAP.
 (ZyTrax, 2019)
 
-#### How is the LDIF format being organized? Explain the practical use of LDIF data when running a LDAP service.
+#### How is the LDIF format being organized? Explain the practical use of LDIF data when running an LDAP service.
 
 The format is organized with objects and attributes. The LDIF data describes the directory structure which is needed for exchange
 ("Editorial - LDIF", 2021)
@@ -342,7 +342,7 @@ Backend do the actual work of storing or retrieving data in response to LDAP req
 
 ##### Why is LDAP replication important?
 
-The risk of a failure will be minimized and the traffic load will be reduced.
+The risk of a failure will be minimized, and the traffic load will be reduced.
 
 #### Bibliography
 
@@ -370,7 +370,7 @@ Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from h
 
 ##### No Authentication vs. Authentication?
 
-When you are authenticated on the LDPA-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data with the exception of the `matrikelNr`.
+When you are authenticated on the LDAP-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data with the exception of the `matrikelNr`.
 
 #### Set up an OpenLdap server
 
@@ -496,7 +496,7 @@ uid: frederick
 
 #### Filter based search
 
-All users with an `uid` attribute value starting with the letter “b”:
+All users with a `uid` attribute value starting with the letter “b”:
 
 ```
 (uid=b*)
@@ -512,7 +512,7 @@ All users entries within the whole DIT having a gidNumber value of 100:
 
 ![](images/gidNumber_equal_100.png "Screenshot")
 
-All users entries within the whole DIT having a gidNumber value greater then 1023:
+All users entries within the whole DIT having a gidNumber value greater than 1023:
 
 ![](images/gidNumber_greater_than_1023.png "Screenshot")
 
@@ -526,7 +526,7 @@ All users entries within the whole DIT starting with the character "t" in their 
 
 #### Extending an existing entry
 
-The entry `uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com` may be extended by the `objectclass=posixAccount`. Construct a LDIF file to add the attributes `uidNumber`, `gidNumber` and `homeDirectory` by a modify/add operation:
+The entry `uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com` may be extended by the `objectclass=posixAccount`. Construct an LDIF file to add the attributes `uidNumber`, `gidNumber` and `homeDirectory` by a modify/add operation:
 
 ```
 uid=bean, ou=devel, ou=software, ou=departments, dc=betrayer, dc=com
@@ -581,9 +581,9 @@ After that we need to enter the distinguished name.
 
 ![](images/pam3.png "Screenshot")
 
-After the configuration the installation of the package will be finished and we need to reboot our server.
+After the configuration the installation of the package will be finished, and we need to reboot our server.
 
-After that we can run request
+Now that we can run request
 
 ```
 id daniel
@@ -601,7 +601,7 @@ $ mkhomedir_helper daniel
 
 #### Backup and recovery / restore
 
-Create a backup of the OpenLDAP database configuration in a LDIF-file.
+Create a backup of the OpenLDAP database configuration in an LDIF-file.
 
 ```
 $ slapcat -b cn=config -l ldap-config.ldif
@@ -651,7 +651,7 @@ Restore the LDAP data directories:
 $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
-#### Accessing LDAP by a Pyhton application.
+#### Accessing LDAP by a Python application.
 
 Please find the `application` and the associated `README.md` in the Python directory.
 
@@ -679,12 +679,12 @@ $ aptitude install apache2
 
 ### First Steps
 
-1. After we install the package apache is running per default and can in our case be queried with `http://sdi3a.mi.hdm-stuttgart.de/`.
+1. After we install the package Apache is running per default and can in our case be queried with `http://sdi3a.mi.hdm-stuttgart.de/`.
 
-2. When we move the index.html file out of the directory we can discover another page, for this we need to query the adress again.
-   Now we can se an empty table and below that we find the version of our Apache Server, the domain where its hosted and the associated port.
+2. When we move the index.html file out of the directory we can discover another page, for this we need to query the address again.
+   Now we can see an empty table and below that we find the version of our Apache Server, the domain where its hosted and the associated port.
 
-3. In the next step we povide our own simple webpage which looks like the following:
+3. In the next step we provide our own simple webpage which looks like the following:
 
 ```html
 <!DOCTYPE html>
@@ -701,7 +701,7 @@ $ aptitude install apache2
 $ apt install apache2-doc
 ```
 
-In our case we can find all related files from the packe `apache2-doc`:
+In our case we can find all related files from the package `apache2-doc`:
 
 ```
 $ dpkg -L apache2-doc
@@ -709,13 +709,13 @@ $ dpkg -L apache2-doc
 
 The result is a huge list of file which all belongs to the following path: `/usr/share/doc/apache2-doc/manual/`
 
-5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:
+5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the Pandoc package:
 
 ```
 $ docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
 ```
 
-We want to store the index.html later in `home/sdidoc` so we need to create this directory:
+We want to store the index.html later in `home/sdidoc`, so we need to create this directory:
 
 ```
 $ cd /home
@@ -739,7 +739,7 @@ Last but not least we need to adjust our config file in `/etc/apache2/sites-avai
 </Directory>
 ```
 
-To make our change effective we need to restart the apache web service:
+To make our change effective we need to restart the Apache web service:
 
 ```
 $ systemctl reload apache2
@@ -760,7 +760,7 @@ To realize virtual hosts we need to create a .con file in `/etc/apache2/sites-av
   </VirtualHost>
 ```
 
-Now the side must be enabled with `$ a2ensite dh102.conf` and add the follwing instructions to `/etc/apache2/apache2.conf`:
+Now the side must be enabled with `$ a2ensite dh102.conf` and add the following instructions to `/etc/apache2/apache2.conf`:
 
 ```
 <Directory /home/sdidoc/>
@@ -780,11 +780,11 @@ This can be done by enter the information on our local machine with `$ sudo vim 
 141.62.75.103 sdi3a.mi.hdm-stuttgart.de dh102.sdi3a.mi.hdm-stuttgart.de
 ```
 
-To setup the `manual.sdi3a.mi.hdm-stuttgart.de` we can copy our first .conf file, enable it and register the information on localhost.
+To set up the `manual.sdi3a.mi.hdm-stuttgart.de` we can copy our first .conf file, enable it and register the information on localhost.
 
 ### SSL / TLS Support
 
-The first step ist that we need to create our private root key whith a bit length of 2048:
+The first step is that we need to create our private root key with a bit length of 2048:
 
 ```
 $ openssl genrsa -out rootCA.key 2048
@@ -821,7 +821,7 @@ Common Name (eg, YOUR name) []:manual.sdi3a.mi.hdm-stuttgart.de
 Email Address []:dh102@hdm-stuttgart.de
 ```
 
-To access our created certificate we can transfer the file via scp from the server to our local machine:
+To access our created certificate we can transfer the file via SCP from the server to our local machine:
 
 ```
 $ scp root@sdi3a.mi.hdm-stuttgart.de:/root/ssl-cert/rootCA.pem /home/user/certificates/
@@ -834,7 +834,7 @@ $ sudo cp /home/user/certificates/rootCA.pem /etc/pki/ca-trust/source/anchors/sd
 $ sudo update-ca-trust
 ```
 
-In the next step we need to create a certificate for our webpage. We starting again with the key:
+In the next step we need to create a certificate for our webpage. We're starting again with the key:
 
 ```
 $ openssl genrsa -out device.key 2048
@@ -846,7 +846,7 @@ Now we can create our webpage certificate:
 $ openssl req -new -key device.key -out device.csr
 ```
 
-The interactive script starts again and we go through it pretty much the same as before.
+The interactive script starts again, and we go through it pretty much the same as before.
 
 Now that we have our CA and the device certificate we are able to sign it:
 
@@ -854,7 +854,7 @@ Now that we have our CA and the device certificate we are able to sign it:
 openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
 ```
 
-Enabling the apache SSL module:
+Enabling the Apache SSL module:
 
 ```
 $ a2enmod ssl
@@ -888,7 +888,7 @@ Now the Connection is secure:
 
 ### LDAP authentication
 
-For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
+For these exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
 To use LDAP with Apache Web Server, we need to enable the module `authnz_ldap`:
 
@@ -921,7 +921,7 @@ We can copy one of our previous .conf files and edit the config, which should lo
 </VirtualHost>
 ```
 
-Enabling the site and restart apache web server.
+Enabling the site and restart Apache web server.
 
 ```
 $ a2ensite daniel.conf
@@ -951,7 +951,7 @@ ProtectSystem=false
 PrivateDevices=false
 ```
 
-And run the follwing commands:
+And run the following commands:
 
 ```
 $ systemctl daemon-reload
@@ -964,7 +964,7 @@ To install `php` just enter:
 $ apt install php
 ```
 
-To install phpMyadmin we used a buster backport becuase apt didn't know any package with the name `phpmyadmin`:
+To install phpMyadmin we used a buster backport because apt didn't know any package with the name `phpmyadmin`:
 For this we need to create an apt source file `/etc/apt/sources.list.d/buster-backports.list` and add:
 
 ```
@@ -1010,9 +1010,9 @@ Last but not least we can open the following domain and login `http://sdi3a.mi.h
 
 ![](images/phpmyadmin4.png "Screenshot")
 
-### Providing WEB based user management to your LDAP Servern
+### Providing WEB based user management to your LDAP Server
 
-To install the LDAP Account Manager we need to download it and forward it to the server via `scp` because `ldap-account-manager` isn't availabel via the official `apt` repositorys:
+To install the LDAP Account Manager we need to download it and forward it to the server via `scp` because `ldap-account-manager` isn't available via the official `apt` repositories:
 
 `https://sourceforge.net/projects/lam/`
 
@@ -1036,31 +1036,31 @@ Here we can can edit `TLS` and a `List of valid users`:
 
 ![](images/lam2.png "Screenshot")
 
-After saving this settings we are able to so the our user:
+After saving these settings we are able to so the user:
 
 ![](images/lam3.png "Screenshot")
 
 ### Publish your documentation
 
-Our documentation is written as a .md-file, so we need to convert it with pandoc into a valid .html-file:
+Our documentation is written as a .md file, so we need to convert it with Pandoc into a valid .html file:
 
 ```bash
 $ docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
 ```
 
-Now we transfer the .html-file to our server, which can be done with `scp`:
+Now we transfer the .html file to our server, which can be done with `scp`:
 
 ```
 $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
 
-We doesn't use rsync because we anyway need to convert our file with pandoc to get an actual version. But if you want to use rsync the command would be:
+We don't use rsync because we anyway need to convert our file with Pandoc to get an actual version. But if you want to use rsync the command would be:
 
 ```
 $ rsync -avz -e ssh root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
 
-We can adjust the .conf-file `etc/apache2/apache2.conf/` and and add:
+We can adjust the .conf file `etc/apache2/apache2.conf/` and add:
 
 ```
 <Directory /home/sdidoc/>
@@ -1080,7 +1080,7 @@ Now we can query `http://sdi3a.mi.hdm-stuttgart.de/doc/`.
 
 #### Setup Nextcloud with Apache Web Server
 
-First we need to install packages for apache, mariadb and php:
+First we need to install packages for Apache, MariaDB and PHP:
 
 ```
 $ apt install vim unzip
@@ -1090,7 +1090,7 @@ $ apt install php-intl php-mcrypt php-imagick
 $ apt install php-zip php-xmlwriter php-xmlreader php-xml php-mbstring php-simplexml
 ```
 
-We need another user for our nextcloud in our databse:
+We need another user for our Nextcloud in our database:
 
 ```
 $ mariadb
@@ -1101,7 +1101,7 @@ $ mariadb
 > quit;
 ```
 
-In the next step we download nextcloud and move it to `/var/www`:
+In the next step we download Nextcloud and move it to `/var/www`:
 
 ```
 $ wget https://download.nextcloud.com/server/releases/latest.zip
@@ -1123,7 +1123,7 @@ Alias /nextcloud "/var/www/nextcloud/"
 Give apache2 the permissions on the folder:
 `$ chown -R www-data /var/www/nextcloud/`
 
-Enable the follwing modules and restart apache2:
+Enable the following modules and restart apache2:
 
 ```
 $ a2enmod rewrite
@@ -1150,13 +1150,13 @@ Database-User = "test1"
 Database-Name = "nextcloud"
 ```
 
-After we waiting a bit we can enter again `sdi3a.mi.hdm-stuttgart.de/nextcloud` and now it should look like the screenshot below:
+After we waiting a bit we can enter again `sdi3a.mi.hdm-stuttgart.de/nextcloud`, and now it should look like the screenshot below:
 
 ![](images/nextcloud2.png "Screenshot")
 
 #### User authentication with LDAP
 
-To enable ldap support click on Icon in right top corner then go to `Apps`:
+To enable LDAP support click on Icon in right top corner then go to `Apps`:
 
 ![](images/ncldap1.png "Screenshot")
 
@@ -1164,7 +1164,7 @@ Search for the module `LDAP user and group backend` and enable it:
 
 ![](images/ncldap2.png "Screenshot")
 
-Now we can configure ldap under settings and `LDAP/AD-Integration`:
+Now we can configure LDAP under settings and `LDAP/AD-Integration`:
 
 ![](images/ncldap3.png "Screenshot")
 
