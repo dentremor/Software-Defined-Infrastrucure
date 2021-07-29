@@ -79,7 +79,7 @@ $ dig +noall +answer -x 35.186.224.25:
 With the following command we can install `bind9` and `bind9utils`:
 
 ```bash
-apt install bind9 bind9utils
+$ apt install bind9 bind9utils
 ```
 
 In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need to know the IP-address of our domain `sdi3a.mi.hdm-stuttgart.de` to which we want to forward. For that we can use the following command:
@@ -95,7 +95,7 @@ Now we can enter the IP-address in the already mentioned file.
 
 To register our zones (which we will create later) we need to adjust the file `:named.conf.local` which should look like the following:
 
-```
+```conf
 //
 // Do any local configuration here
 //
@@ -130,14 +130,14 @@ zone "75.62.141.in-addr.arpa" {
 
 For our zones we need to enable IPv4 in the File `/etc/default/bind9` with the parameter:
 
-```
+```conf
 # startup options for the server
 OPTIONS="-4 -u bind"
 ```
 
 #### Create cache directory
 
-```
+```bash
 $ mkdir -p /var/cache/bind
 ```
 
@@ -145,7 +145,7 @@ $ mkdir -p /var/cache/bind
 
 In the first step we need to change our directory to
 
-```
+```bash
 $ cd /etc/bind
 $ mkdir zones
 ```
@@ -154,20 +154,20 @@ $ mkdir zones
 
 We start to configure our forward lookup zone `zones/db.forward` with
 
-```
+```bash
 $ vim db.forward
 ```
 
 To get the host record we need to `dig` sdi3a.mi.hdm-stuttgart.de.
 
-```
+```bash
 $ dig +noall +answer sdi3a.mi.hdm-stuttgart.de.:
   sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
 ```
 
 With this information we can adjust our file `zones/db.forward` which looks like the following:
 
-```
+```conf
 ; db.forward
 ; Forward lookup zone
 
@@ -193,9 +193,9 @@ info                             IN            CNAME               www
 
 ##### Configure reverse zone
 
-With the information we became above from the dig command, we can configure our reverse zone:
+With the information we became above from the `dig` command, we can configure our reverse zone:
 
-```
+```conf
 ; db.rev-local
 ; reverse lookup zone
 
@@ -217,7 +217,7 @@ We use the Cloudflare DNS service, as a forwarder.
 
 Add the forwarder in the file `/etc/bind/named.conf.options`:
 
-```
+```conf
 forwarders {
 	1.1.1.1
 };
@@ -227,13 +227,13 @@ forwarders {
 
 To achieve this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
 
-```
+```conf
 mail                             IN            MX          10      mx1.hdm-stuttgart.de.
 ```
 
 Test the record via `nslookup`:
 
-```
+```bash
 $ nslookup manual.sdi3a.mi.hdm-stuttgart.de 141.62.75.103
 Server:		141.62.75.103
 Address:	141.62.75.103#53
@@ -242,7 +242,7 @@ Name:	manual.sdi3a.mi.hdm-stuttgart.de
 Address: 141.62.75.103
 ```
 
-```
+```bash
 $ nslookup -type=ptr 141.62.75.103
 Server:		127.0.0.53
 Address:	127.0.0.53#53
@@ -370,19 +370,19 @@ Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from h
 
 ##### No Authentication vs. Authentication?
 
-When you are authenticated on the LDAP-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data with the exception of the `matrikelNr`.
+When you are authenticated on the LDAP-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data except the `matrikelNr`.
 
 #### Set up an OpenLdap server
 
 First we need to install several packages on our server:
 
-```
+```bash
 $ apt install slapd ldap-utils dialog
 ```
 
 To reconfigure `slapd` we need to type into our console:
 
-```
+```bash
 $ dpkg-reconfigure slapd
 ```
 
@@ -390,9 +390,9 @@ $ dpkg-reconfigure slapd
 
 #### Populating your DIT
 
-After add all entry's in our tree, it look like the following:
+After add all entry's in our tree, it looks like the following:
 
-```
+```yaml
 version: 1
 
 dn: dc=betrayer,dc=com
@@ -498,17 +498,17 @@ uid: frederick
 
 All users with a `uid` attribute value starting with the letter “b”:
 
-```
+```plaintext
 (uid=b*)
 ```
 
 All entries with either a defined `uid` attribute or a `ou` attribute starting with letter “d”:
 
-```
+```plaintext
 (|(uid=d*)(ou=d*))
 ```
 
-All users entries within the whole DIT having a gidNumber value of 100:
+All users entries within the whole `DIT` having a `gidNumber` value of 100:
 
 ![](images/gidNumber_equal_100.png "Screenshot")
 
@@ -516,11 +516,11 @@ All users entries within the whole DIT having a gidNumber value greater than 102
 
 ![](images/gidNumber_greater_than_1023.png "Screenshot")
 
-All users entries within the whole DIT having the substring "ei" in their cn attribute:
+All users entries within the whole `DIT` having the substring `"ei"` in their `cn` attribute:
 
 ![](images/cn_contains_ei.png "Screenshot")
 
-All users entries within the whole DIT starting with the character "t" in their uid attribute or the gidNumber is equal to 100:
+All users entries within the whole `DIT` starting with the character "t" in their `uid` attribute or the `gidNumber` is equal to 100:
 
 ![](images/last.png "Screenshot")
 
@@ -528,7 +528,7 @@ All users entries within the whole DIT starting with the character "t" in their 
 
 The entry `uid=bean,ou=devel,ou=software,ou=departments,dc=betrayer;dc=com` may be extended by the `objectclass=posixAccount`. Construct an LDIF file to add the attributes `uidNumber`, `gidNumber` and `homeDirectory` by a modify/add operation:
 
-```
+```yaml
 uid=bean, ou=devel, ou=software, ou=departments, dc=betrayer, dc=com
 changetype: add
 objectClass: posixAccount
@@ -551,8 +551,8 @@ homeDirectory: /home/daniel
 
 Use the following command:
 
-```
-$ root@sdi3b:~# telnet sdi3a.mi.hdm-stuttgart.de 389
+```bash
+root@sdi3b:~# telnet sdi3a.mi.hdm-stuttgart.de 389
 ```
 
 Then something like this should appear:
@@ -565,7 +565,7 @@ Escape character is '^]'.
 
 ##### Install and configure libpam-ldapd
 
-```
+```bash
 $ apt-get install libpam-ldapd
 ```
 
@@ -583,16 +583,16 @@ After that we need to enter the distinguished name.
 
 After the configuration the installation of the package will be finished, and we need to reboot our server.
 
-Now that we can run request
+Now that we can run `request`:
 
-```
+```plaintext
 id daniel
 uid=42(daniel) gid=1337 Gruppen=1337
 ```
 
-In the last step we need to create a user and a group accordingly, which we need to assign to the user:
+In the last step we need to create a `user` and a `group` accordingly, which we need to assign to the `user`:
 
-```
+```bash
 $ groupadd -g 1337 betrayer_software_devel
 $ useradd -u 42 daniel
 $ usermod -g betrayer_software_devel daniel
@@ -601,53 +601,53 @@ $ mkhomedir_helper daniel
 
 #### Backup and recovery / restore
 
-Create a backup of the OpenLDAP database configuration in an LDIF-file.
+Create a backup of the `OpenLDAP` database configuration in an `LDIF-file`.
 
-```
+```bash
 $ slapcat -b cn=config -l ldap-config.ldif
 ```
 
 Create a backup of the OpenLDAP data.
 
-```
+```bash
 $ slapcat -l ldap-data.ldif
 ```
 
-Copy the data and configuration backup from the OpenLDAP provider server to the OpenLDAP consumer server.
+Copy the data and configuration backup from the `OpenLDAP` provider server to the `OpenLDAP` consumer server.
 
-```
+```bash
 $ scp {ldap-data.ldif,ldap-config.ldif} root@sdi3b.mi.hdm-stuttgart.de
 ```
 
-Now we need to access our consumer server via ssh.
+Now we need to access our consumer server via `ssh`.
 
-```
+```bash
 $ ssh root@sdi3b.mi.hdm-stuttgart.de
 ```
 
-Restore the OpenLDAP provider Data and configs on the consumer server.
+Restore the `OpenLDAP` provider Data and configs on the consumer server.
 Stop the LDAP service:
 
-```
+```bash
 $ systemctl stop slapd
 ```
 
 Ensure that the LDAP configuration and data directories are empty:
 
-```
+```bash
 $ rm -rf /etc/ldap/slapd.d/*
 $ rm -rf /var/lib/ldap/*
 ```
 
 Restore the configuration backup:
 
-```
+```bash
 $ slapadd -b cn=config -l /root/ldap-config.ldif -F /etc/ldap/slapd.d/
 ```
 
 Restore the LDAP data directories:
 
-```
+```bash
 $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
@@ -659,13 +659,9 @@ Please find the `application` and the associated `README.md` in the Python direc
 
 The following framework were used:
 
-```
-https://www.python-ldap.org/en/python-ldap-3.3.0/
-```
+- https://www.python-ldap.org/en/python-ldap-3.3.0/
+- https://click.palletsprojects.com/en/8.0.x/
 
-```
-https://click.palletsprojects.com/en/8.0.x/
-```
 
 ## Apache Web Server
 
@@ -673,7 +669,7 @@ https://click.palletsprojects.com/en/8.0.x/
 
 For the following tasks we need the package `apache2`, which we can install with the following command:
 
-```
+```bash
 $ aptitude install apache2
 ```
 
@@ -695,42 +691,42 @@ $ aptitude install apache2
 </html>
 ```
 
-4. In the next step we install the apache2 documentation with the following command:
+4. In the next step we install the `Apache2` documentation with the following command:
 
-```
-$ apt install apache2-doc
+```bash
+# apt install apache2-doc
 ```
 
 In our case we can find all related files from the package `apache2-doc`:
 
-```
+```bash
 $ dpkg -L apache2-doc
 ```
 
 The result is a huge list of file which all belongs to the following path: `/usr/share/doc/apache2-doc/manual/`
 
-5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the Pandoc package:
+5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the `Pandoc` package:
 
 ```
-$ docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
+# docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
 ```
 
 We want to store the index.html later in `home/sdidoc`, so we need to create this directory:
 
-```
+```bash
 $ cd /home
 $ mkdir sdidoc
 ```
 
 Now we can transfer our file from the local machine to our server:
 
-```
+```bash
 $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
 
 Last but not least we need to adjust our config file in `/etc/apache2/sites-available/000-default.conf` with the following terms:
 
-```
+```xml
 <Directory /home/sdidoc>
   Options Indexes FollowSymLinks Includes ExecCGI
   AllowOverride All
@@ -741,7 +737,7 @@ Last but not least we need to adjust our config file in `/etc/apache2/sites-avai
 
 To make our change effective we need to restart the Apache web service:
 
-```
+```bash
 $ systemctl reload apache2
 ```
 
@@ -749,7 +745,7 @@ $ systemctl reload apache2
 
 To realize virtual hosts we need to create a .con file in `/etc/apache2/sites-available`, the config in this file should look like the following:
 
-```
+```xml
   <VirtualHost *:80>
       ServerAdmin dh102@hdm-stuttgart.de
       ServerName sdi3a.mi.hdm-stuttgart.de
@@ -760,9 +756,13 @@ To realize virtual hosts we need to create a .con file in `/etc/apache2/sites-av
   </VirtualHost>
 ```
 
-Now the side must be enabled with `$ a2ensite dh102.conf` and add the following instructions to `/etc/apache2/apache2.conf`:
-
+Now the side must be enabled with 
+```bash
+$ a2ensite dh102.conf
 ```
+and add the following instructions to `/etc/apache2/apache2.conf`:
+
+```xml
 <Directory /home/sdidoc/>
         AllowOverride None
         Require all granted
@@ -771,12 +771,14 @@ Now the side must be enabled with `$ a2ensite dh102.conf` and add the following 
 ```
 
 Now it is important to grant apache2 the access to the directory where our `index.html` is placed:
-`$ chown -R www-data /home/sdidoc`
+```bash
+$ chown -R www-data /home/sdidoc
+```
 
 To access the webpage from a local machine, we need to give our local machine the relevant information to reach the page.
-This can be done by enter the information on our local machine with `$ sudo vim /etc/hosts`:
+This can be done by enter the information on our local machine with `# sudo vim /etc/hosts`:
 
-```
+```plaintext
 141.62.75.103 sdi3a.mi.hdm-stuttgart.de dh102.sdi3a.mi.hdm-stuttgart.de
 ```
 
@@ -786,25 +788,25 @@ To set up the `manual.sdi3a.mi.hdm-stuttgart.de` we can copy our first .conf fil
 
 The first step is that we need to create our private root key with a bit length of 2048:
 
-```
+```bash
 $ openssl genrsa -out rootCA.key 2048
 ```
 
 For security reasons we should encrypt our key:
 
-```
+```bash
 $ openssl genrsa -des3 -out rootCA.key 2048
 ```
 
 With our `rootCA.key` we can now self-sign a certificate:
 
-```
+```bash
 $ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
 ```
 
 The above command starts an interactive script, which in our case looked like the following after processing:
 
-```
+```plaintext
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -821,28 +823,28 @@ Common Name (eg, YOUR name) []:manual.sdi3a.mi.hdm-stuttgart.de
 Email Address []:dh102@hdm-stuttgart.de
 ```
 
-To access our created certificate we can transfer the file via SCP from the server to our local machine:
+To access our created certificate we can transfer the file via `SCP` from the server to our local machine:
 
-```
+```bash
 $ scp root@sdi3a.mi.hdm-stuttgart.de:/root/ssl-cert/rootCA.pem /home/user/certificates/
 ```
 
 To import the root ca on the local machine:
 
-```
-$ sudo cp /home/user/certificates/rootCA.pem /etc/pki/ca-trust/source/anchors/sdi3a
-$ sudo update-ca-trust
+```bash
+$ cp /home/user/certificates/rootCA.pem /etc/pki/ca-trust/source/anchors/sdi3a
+$ update-ca-trust
 ```
 
 In the next step we need to create a certificate for our webpage. We're starting again with the key:
 
-```
+```bash
 $ openssl genrsa -out device.key 2048
 ```
 
 Now we can create our webpage certificate:
 
-```
+```bash
 $ openssl req -new -key device.key -out device.csr
 ```
 
@@ -850,19 +852,19 @@ The interactive script starts again, and we go through it pretty much the same a
 
 Now that we have our CA and the device certificate we are able to sign it:
 
-```
-openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
+```bash
+$ openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
 ```
 
 Enabling the Apache SSL module:
 
-```
+```bash
 $ a2enmod ssl
 ```
 
 In the last step we need to adjust our configuration from the previous task `/etc/apache2/sites-available/manual.conf`:
 
-```
+```xml
 <VirtualHost *:443>
     ServerAdmin dh102@hdm-stuttgart.de
     ServerName sdi3a.mi.hdm-stuttgart.de
@@ -878,8 +880,8 @@ In the last step we need to adjust our configuration from the previous task `/et
 
 To make the change effective we need to restart the service:
 
-```
-systemctl restart apache2.service
+```bash
+$ systemctl restart apache2.service
 ```
 
 Now the Connection is secure:
@@ -892,13 +894,13 @@ For these exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
 To use LDAP with Apache Web Server, we need to enable the module `authnz_ldap`:
 
-```
+```bash
 $ a2enmod authnz_ldap
 ```
 
-We can copy one of our previous .conf files and edit the config, which should look like the following:
+We can copy one of our previous `.conf files` and edit the config, which should look like the following:
 
-```
+```xml
 <VirtualHost *:443>
     ServerAdmin dh102@hdm-stuttgart.de
     DocumentRoot /home/sdidoc/
@@ -923,7 +925,7 @@ We can copy one of our previous .conf files and edit the config, which should lo
 
 Enabling the site and restart Apache web server.
 
-```
+```bash
 $ a2ensite daniel.conf
 $ systemctl restart apache2.service
 ```
@@ -934,13 +936,13 @@ Now it should be possible to enter `https://sdi3a.mi.hdm-stuttgart.de/test` in o
 
 To install `mysql-server` use:
 
-```
+```bash
 $ apt install default-mysql-server
 ```
 
-After facing a issue with LXC Container we need to adjust the config `/etc/systemd/system/mariadb.service.d/lxc.conf`:
+After facing an issue with `LXC Container` we need to adjust the config `/etc/systemd/system/mariadb.service.d/lxc.conf`:
 
-```
+```conf
 [Service]
 ProtectHome=false
 ProtectSystem=false
@@ -953,34 +955,34 @@ PrivateDevices=false
 
 And run the following commands:
 
-```
+```bash
 $ systemctl daemon-reload
 $ systemctl restart mariadb
 ```
 
 To install `php` just enter:
 
-```
+```bash
 $ apt install php
 ```
 
-To install phpMyadmin we used a buster backport because apt didn't know any package with the name `phpmyadmin`:
+To install PhpMyAdmin we used a buster backport because apt didn't know any package with the name `phpmyadmin`:
 For this we need to create an apt source file `/etc/apt/sources.list.d/buster-backports.list` and add:
 
-```
+```plaintext
 deb http://deb.debian.org/debian buster-backports main
 ```
 
 Now we need to refresh the package cache and install `php-twig`:
 
-```
+```bash
 $ apt-get update
 $ apt-get install -t buster-backports php-twig
 ```
 
-And finally we can install `phpMyAdmin`:
+And finally we can install `PhpMyAdmin`:
 
-```
+```bash
 $ apt-get install -t buster-backports phpmyadmin
 ```
 
@@ -992,17 +994,17 @@ During the installation a dialog should open up:
 
 ![](images/phpmyadmin3.png "Screenshot")
 
-Now we need to create a user with which we can log in:
+Now we need to create a user in our database with which we can log in:
 
-```
+```bash
 $ mariadb
 
 > CREATE USER 'phpmyadminuser'@'localhost' IDENTIFIED BY 'test1';
 ```
 
-And restart Apach2:
+And restart `Apach2`:
 
-```
+```bash
 $ systemctl restart apache2.service
 ```
 
@@ -1016,13 +1018,13 @@ To install the LDAP Account Manager we need to download it and forward it to the
 
 `https://sourceforge.net/projects/lam/`
 
-```
+```bash
 $ scp /home/user/Downloads/ldap-account-manager_7.6-1_all.deb root@sdi3a.mi.hdm-stuttgart.de:/home/
 ```
 
 ... and install it with `apt`:
 
-```
+```bash
 $ apt install /home/ldap-account-manager_7.6-1_all.deb
 ```
 
@@ -1030,7 +1032,7 @@ Now we can configure the LDAP Account Manager `http://sdi3a.mi.hdm-stuttgart.de/
 The default master password for `Edit general settings` is `lam` and should be changed to something secure.
 
 The password for `Edit server profiles` is also `lam`.
-Here we can can edit `TLS` and a `List of valid users`:
+Here we can edit `TLS` and a `List of valid users`:
 
 ![](images/lam1.png "Screenshot")
 
@@ -1042,7 +1044,7 @@ After saving these settings we are able to so the user:
 
 ### Publish your documentation
 
-Our documentation is written as a .md file, so we need to convert it with Pandoc into a valid .html file:
+Our documentation is written as a .md file, so we need to convert it with `Pandoc` into a valid .html file:
 
 ```bash
 $ docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
@@ -1050,19 +1052,19 @@ $ docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --
 
 Now we transfer the .html file to our server, which can be done with `scp`:
 
-```
+```bash
 $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
 
-We don't use rsync because we anyway need to convert our file with Pandoc to get an actual version. But if you want to use rsync the command would be:
+We don't use `rsync` because we anyway need to convert our file with `Pandoc` to get an actual version. But if you want to use `rsync` the command would be:
 
-```
+```bash
 $ rsync -avz -e ssh root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
 
 We can adjust the .conf file `etc/apache2/apache2.conf/` and add:
 
-```
+```xml
 <Directory /home/sdidoc/>
         AllowOverride None
         Require all granted
@@ -1080,9 +1082,9 @@ Now we can query `http://sdi3a.mi.hdm-stuttgart.de/doc/`.
 
 #### Setup Nextcloud with Apache Web Server
 
-First we need to install packages for Apache, MariaDB and PHP:
+First we need to install packages for `Apache2`, `MariaDB` and `PHP`:
 
-```
+```bash
 $ apt install vim unzip
 $ apt install apache2 mariadb-server libapache2-mod-php
 $ apt install php-gd php-json php-mysql php-curl
@@ -1090,9 +1092,9 @@ $ apt install php-intl php-mcrypt php-imagick
 $ apt install php-zip php-xmlwriter php-xmlreader php-xml php-mbstring php-simplexml
 ```
 
-We need another user for our Nextcloud in our database:
+We need another user for our `Nextcloud` in our database:
 
-```
+```sql
 $ mariadb
 > CREATE USER 'ncadmin'@'localhost' IDENTIFIED BY 'test1';
 > CREATE DATABASE IF NOT EXISTS nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
@@ -1101,9 +1103,9 @@ $ mariadb
 > quit;
 ```
 
-In the next step we download Nextcloud and move it to `/var/www`:
+In the next step we download `Nextcloud` and move it to `/var/www`:
 
-```
+```bash
 $ wget https://download.nextcloud.com/server/releases/latest.zip
 $ unzip latest.zip
 $ mv nextcloud/ /var/www
@@ -1111,27 +1113,28 @@ $ mv nextcloud/ /var/www
 
 Add the following lines to `/etc/apache2/apache2.conf`:
 
-```
+```xml
 <Directory /var/www/nextcloud/>
-Require all granted
-AllowOverride All
-Options FollowSymLinks MultiViews
+  Require all granted
+  AllowOverride All
+  Options FollowSymLinks MultiViews
 </Directory>
 Alias /nextcloud "/var/www/nextcloud/"
 ```
 
-Give apache2 the permissions on the folder:
-`$ chown -R www-data /var/www/nextcloud/`
-
-Enable the following modules and restart apache2:
-
+Give `Apache2` the permissions on the folder:
+```bash
+$ chown -R www-data /var/www/nextcloud/
 ```
+
+Enable the following modules and restart `Apache2`:
+
+```bash
 $ a2enmod rewrite
 $ a2enmod headers
 $ a2enmod env
 $ a2enmod dir
 $ a2enmod mime
-
 $ systemctl restart apache2.service
 ```
 
@@ -1141,7 +1144,7 @@ Now we can open in our browser `sdi3a.mi.hdm-stuttgart.de/nextcloud` which shoul
 
 To finish the installation type in the necessary data and click `Installation abschließen`.
 
-```
+```plaintext
 User = "admin"
 Password = "test1"
 
@@ -1150,7 +1153,7 @@ Database-User = "test1"
 Database-Name = "nextcloud"
 ```
 
-After we waiting a bit we can enter again `sdi3a.mi.hdm-stuttgart.de/nextcloud`, and now it should look like the screenshot below:
+After we're waiting a bit we can enter again `sdi3a.mi.hdm-stuttgart.de/nextcloud`, and now it should look like the screenshot below:
 
 ![](images/nextcloud2.png "Screenshot")
 
