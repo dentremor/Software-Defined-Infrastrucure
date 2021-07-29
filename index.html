@@ -719,7 +719,7 @@ uid=42(daniel) gid=1337 Gruppen=1337</code></pre>
 <ol start="4" type="1">
 <li>In the next step we install the <code>Apache2</code> documentation with the following command:</li>
 </ol>
-<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># apt install apache2-doc</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> apt install apache2-doc</span></code></pre></div>
 <p>In our case we can find all related files from the package <code>apache2-doc</code>:</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> dpkg <span class="at">-L</span> apache2-doc</span></code></pre></div>
 <p>The result is a huge list of file which all belongs to the following path: <code>/usr/share/doc/apache2-doc/manual/</code></p>

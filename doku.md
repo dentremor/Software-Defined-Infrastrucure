@@ -694,7 +694,7 @@ $ aptitude install apache2
 4. In the next step we install the `Apache2` documentation with the following command:
 
 ```bash
-# apt install apache2-doc
+$ apt install apache2-doc
 ```
 
 In our case we can find all related files from the package `apache2-doc`:
