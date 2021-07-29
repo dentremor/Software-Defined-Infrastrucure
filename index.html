@@ -582,7 +582,7 @@ $ rm -rf /var/lib/ldap/*</code></pre>
 <li>In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:</li>
 </ol>
 <pre><code>$ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md</code></pre>
-<p>We want to store the index.html later in <code>home/sdidoc</code> so we need to create this directroy: <code>$ cd /home   $ mkdir sdidoc</code></p>
+<p>We want to store the index.html later in <code>home/sdidoc</code> so we need to create this directory: <code>$ cd /home   $ mkdir sdidoc</code></p>
 <p>Now we can transfer our file from the local machine to our server: <code>$ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/</code></p>
 <p>Last but not least we need to adjust our config file in <code>/etc/apache2/sites-available/000-default.conf</code> with the following terms:</p>
 <pre><code>&lt;Directory /home/sdidoc&gt;
