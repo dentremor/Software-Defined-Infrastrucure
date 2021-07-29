@@ -71,7 +71,7 @@ $ dig +noall +answer -x 35.186.224.25:
   apt install bind9 bind9utils
   ```
 
-  In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need the IP-address of our domain `sdi3a.mi.hdm-stuttgart.de` we want to forward. For that we can use the following command:
+  In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need to know the IP-address of our domain `sdi3a.mi.hdm-stuttgart.de` to which we want to forward. For that we can use the following command:
   ```bash
   $ dig +nocmd sdi3a.mi.hdm-stuttgart.de +noall +answer:
     sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
@@ -80,7 +80,7 @@ $ dig +noall +answer -x 35.186.224.25:
 
 #### 1.2.1 Configure the zone file
 
-  To register our zones (which we will create later) we need to adjust the file `:named.conf.local` which should look like following: 
+  To register our zones (which we will create later) we need to adjust the file `:named.conf.local` which should look like the following: 
 
 ```
 //
@@ -113,7 +113,7 @@ zone "75.62.141.in-addr.arpa" {
 //include "/etc/bind/zones.rfc1918";
   ```
 #### 1.2.2 Configure the zone file
-For our zones we need to enable IPv4 in the File ```/etc/default/bind9``` with the parameter 
+For our zones we need to enable IPv4 in the File ```/etc/default/bind9``` with the parameter:
 ```
 # startup options for the server
 OPTIONS="-4 -u bind"
@@ -161,8 +161,8 @@ $TTL 604800
 
                                                NS                  ns3
 ns3                              IN            A                   141.62.75.103
-sdi3a                            IN            A                   141.62.75.103
 sdidoc.sdi3a                     IN            A                   141.62.75.103
+sdi3a                            IN            A                   141.62.75.103
 www                              IN            A                   141.62.75.103
 manual.sdi3a                     IN            A                   141.62.75.103
 www3-1                           IN            CNAME               www
@@ -194,7 +194,7 @@ $TTL 604800
 
 We use the CloudFlare DNS service, as a forwarder.
 
-Now we can add the forwarder in the file `/etc/bind/named.conf.options`:
+Add the forwarder in the file `/etc/bind/named.conf.options`:
 ```
 forwarders {
 	1.1.1.1
@@ -203,7 +203,7 @@ forwarders {
 
 ##### 1.2.5 Set mail exchange record
 
-For this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
+To achieve this we need to set another record in our forward zone `etc/bind/zones/db.forward`:
 ```
 mail                             IN            MX          10      mx1.hdm-stuttgart.de.
 ```
@@ -223,10 +223,9 @@ $ nslookup -type=ptr 141.62.75.103
 Server:		127.0.0.53
 Address:	127.0.0.53#53
 
-Non-authoritative answer:
-103.75.62.141.in-addr.arpa	name = sdi3a.medieninformatik.hdm-stuttgart.de.
-
-Authoritative answers can be found from:
+103.75.62.141.in-addr.arpa	name = sdi3a.mi.hdm-stuttgart.de.
+103.75.62.141.in-addr.arpa	name = dh102.sdi3a.mi.hdm-stuttgart.de.
+103.75.62.141.in-addr.arpa	name = manual.sdi3a.mi.hdm-stuttgart.de.
 ```
 
 ## Bibliography
@@ -336,9 +335,6 @@ Backends do the actual work of storing or retrieving data in response to LDAP re
 ```
 The risk of a failure will be minimized and the traffic load will be reduced.
 ```
-##### How do you restrict access to LDAP directories?
-<!-- TODO finish questions. -->
-
 
 ## Bibliography
 Willeke, J. (various dates). LDAP Wiki 3. May 2021, from https://ldapwiki.com/wiki
