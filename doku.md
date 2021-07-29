@@ -776,7 +776,7 @@ Now we can create our device certificate:
 $ openssl req -new -key device.key -out device.csr
 ```
 
-The interactive script starts again and we go through it preatty much the same as before, but we need to ensure that the common name match the ip-adress from the machine.
+The interactive script starts again and we go through it pretty much the same as before, but this time we need to ensure that the common name match the ip-adress from the machine.
 
 ```
 Common Name (eg, YOUR name) []: 141.62.75.103
@@ -785,11 +785,6 @@ Common Name (eg, YOUR name) []: 141.62.75.103
 Now that we have our CA and the device certificate we are able to sign it:
 ```
 openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
-```
-
-Now we need to sign our certificate:
-```
-$ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
 ```
 
 Enabling the apache SSL module:
@@ -820,7 +815,7 @@ systemctl restart apache2.service
 
 For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
-To use LDAP with Apache Web Server, we need to enable it:
+To use LDAP with Apache Web Server, we need to enable the module ```authnz_ldap```:
 ```
 $ a2enmod authnz_ldap
 ```
@@ -882,13 +877,13 @@ And run the follwing commands:
 $ systemctl daemon-reload
 $ systemctl restart mariadb
 ```
-To install ```php``` just run:
+To install ```php``` just enter:
 ```
 $ apt install php
 ```
 
-To install phpMyadmin we must use a buster backport becuase apt didn't know any package with the name ```phpmyadmin```:
-For this we need to create a apt source file ```/etc/apt/sources.list.d/buster-backports.list``` and add:
+To install phpMyadmin we used a buster backport becuase apt didn't know any package with the name ```phpmyadmin```:
+For this we need to create an apt source file ```/etc/apt/sources.list.d/buster-backports.list``` and add:
 ```
 deb http://deb.debian.org/debian buster-backports main
 ```
@@ -923,7 +918,7 @@ And restart Apach2:
 $ systemctl restart apache2.service
 ```
 
-Now we can open the following domain and login ```http://sdi3a.mi.hdm-stuttgart.de/phpmyadmin/index.php```:
+Last but not least we can open the following domain and login ```http://sdi3a.mi.hdm-stuttgart.de/phpmyadmin/index.php```:
 ![alt text](images/phpmyadmin4.png "Screenshot")
 
 ### 3.1.5 Providing WEB based user management to your LDAP Servern
@@ -935,7 +930,7 @@ To install the LDAP Account Manager we need to download it and forward it to the
 $ scp /home/user/Downloads/ldap-account-manager_7.6-1_all.deb root@sdi3a.mi.hdm-stuttgart.de:/home/
 ```
 
-And install it with ```apt```:
+... and install it with ```apt```:
 ```
 $ apt install /home/ldap-account-manager_7.6-1_all.deb
 ```
@@ -943,7 +938,7 @@ $ apt install /home/ldap-account-manager_7.6-1_all.deb
 Now we can configure the LDAP Account Manager ```http://sdi3a.mi.hdm-stuttgart.de/lam/templates/config/index.php```.
 The default master password for ```Edit general settings``` is ```lam``` and should be changed to something secure.
 
-The password for ```Edit server profiles``` is also lam.
+The password for ```Edit server profiles``` is also ```lam```.
 Here we can can edit ```TLS``` and a ```List of valid users```:
 ![alt text](images/lam1.png "Screenshot")
 ![alt text](images/lam2.png "Screenshot")
@@ -954,16 +949,16 @@ After saving this settings we are able to so the our user:
 ### 3.1.6 Publish your documentation
 
 Our documentation is written as a .md-file, so we need to convert it with pandoc into a valid .html-file:
-   ```bash
-  $ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md
-  ``` 
+```bash
+$ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md
+``` 
 
 Now we transfer the .html-file to our server, which can be done with ```scp```:
 ```
 $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/ 
 ```
 
-We doesn't use rsync because we anyway need to convert our file with pandoc to get an actual version. But if you want to use rsync the caommand would be:
+We doesn't use rsync because we anyway need to convert our file with pandoc to get an actual version. But if you want to use rsync the command would be:
 ```
 $ rsync -avz -e ssh root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
 ```
@@ -1015,7 +1010,7 @@ $ unzip latest.zip
 $ mv nextcloud/ /var/www
 ```
 
-Add the follwing lines to ```/etc/apache2/apache2.conf```:
+Add the following lines to ```/etc/apache2/apache2.conf```:
 ```
 <Directory /var/www/nextcloud/>
 Require all granted
@@ -1025,7 +1020,7 @@ Options FollowSymLinks MultiViews
 Alias /nextcloud "/var/www/nextcloud/"
 ```
 
-Give apache2 the permission on the folder:
+Give apache2 the permissions on the folder:
 ```$ chown -R www-data /var/www/nextcloud/```
 
 Enable the follwing modules and restart apache2:
