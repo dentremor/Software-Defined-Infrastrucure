@@ -3,7 +3,7 @@
 
 ### 1.1 Queriyng DNS data
 
-Due to the absence of `dig`, this was installed with the following command 
+Due to the absence of `dig`, this was installed with the following command:
 ```bash
 $ apt install dnsutils
 ```
@@ -66,24 +66,23 @@ $ dig +noall +answer -x 35.186.224.25:
 
 
 ### 1.2 Installing Bind
-
-  Über folgenden Command wurde Bind9 inklusive den Utils installiert: 
+  With the following command we can install ```bind9``` and ```bind9utils```:
   ```bash
   apt install bind9 bind9utils
   ```
 
-  In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need the IP-adress of our domain `sdi3a.mi.hdm-stuttgart.de` we want to forward. For that we used the following command 
+  In `/etc/bind/` we need to adjust the `named.conf.options`, for that we need the IP-address of our domain `sdi3a.mi.hdm-stuttgart.de` we want to forward. For that we can use the following command:
   ```bash
   $ dig +nocmd sdi3a.mi.hdm-stuttgart.de +noall +answer:
     sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
    ```
-   Now we can enter the ip-adress in the already mentioned file.
+   Now we can enter the IP-address in the already mentioned file.
 
 #### 1.2.1 Configure the zone file
 
-  To create the forward zone we need to adjust the file `:named.conf.local` which should look like following: 
+  To register our zones (which we will create later) we need to adjust the file `:named.conf.local` which should look like following: 
 
-```bash
+```
 //
 // Do any local configuration here
 //
@@ -121,7 +120,7 @@ OPTIONS="-4 -u bind"
 ```
 #### 1.2.3 Create cache directory
 
-  ```bash 
+  ```
   $ mkdir -p /var/cache/bind
   ```
 
@@ -129,19 +128,19 @@ OPTIONS="-4 -u bind"
 #### 1.2.4 Configure the created zones
 
   In the first step we need to change our directory to
-  ```bash 
+  ``` 
   $ cd /etc/bind
   $ mkdir zones
   ```
 ##### 1.2.4.1 Configure forward zone
   We start to configure our forward lookup zone `zones/db.forward` with 
-```bash 
+``` 
 $ vim db.forward
 ```
 
 To get the host record we need to `dig` sdi3a.mi.hdm-stuttgart.de.
 
-```bash
+```
 $ dig +noall +answer sdi3a.mi.hdm-stuttgart.de.:
   sdi3a.mi.hdm-stuttgart.de. 86400 IN	A	141.62.75.103
 ```
@@ -210,7 +209,7 @@ mail                             IN            MX          10      mx1.hdm-stutt
 ```
 
 Test the record via `nslookup`:
-```bash
+```
 $ nslookup manual.sdi3a.mi.hdm-stuttgart.de 141.62.75.103
 Server:		141.62.75.103
 Address:	141.62.75.103#53
@@ -219,7 +218,7 @@ Name:	manual.sdi3a.mi.hdm-stuttgart.de
 Address: 141.62.75.103
 ```
 
-```bash
+```
 $ nslookup -type=ptr 141.62.75.103
 Server:		127.0.0.53
 Address:	127.0.0.53#53
@@ -239,9 +238,9 @@ Authoritative answers can be found from:
 
 #### What is the LDAP Protocol? What is the difference between the two protocols ldap and ldaps?
 ```
-"The Lightweight Directory Access Protocol can be used for queriyng and modifying information from distributed directory services." 
+"The Lightweight Directory Access Protocol can be used for querying and modifying information from distributed directory services." 
 
-The difference between these two protocols are the encrytpion, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via STARTTLS or decrypted and running on default port 389.
+The difference between these two protocols are the encryption, LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted via STARTTLS or decrypted and running on default port 389.
 ("Editorial - LDAP", 2021)
 ```
 
@@ -295,14 +294,14 @@ For distribution reasons the LDAP-database can be distributed to several servers
 #### Why do organizations sometimes prefer LDAP data repositories rather than using relational database systems?
 ```
 LDAP is very suitable in cases of high read rates and low write rates (write-once-read-many-times). 
-Furthermore relational databases like SQL requieres a detailed knowledge about the data structure, which isnt the case when it comes to LDAP.
+Furthermore relational databases like SQL requires a detailed knowledge about the data structure, which isn't the case when it comes to LDAP.
 (ZyTrax, 2019)
 ```
 
 
 #### How is the LDIF format being organized? Explain the practical use of LDIF data when running a LDAP service.
 ```
-The format is organized with abjects and attributes. The LDIF datas describes the directory structure which is needed for exchange 
+The format is organized with objects and attributes. The LDIF data describes the directory structure which is needed for exchange 
 ("Editorial - LDIF", 2021)
 ```
 
@@ -310,7 +309,7 @@ The format is organized with abjects and attributes. The LDIF datas describes th
 
 ##### How do LDAP filters work?
 ```
-There are several filters in LDAP, with these filters its possible to add criterias to an object search.
+There are several filters in LDAP, with these filters its possible to add criteria to an object search.
 (Föckeler, -)
 ```
 
@@ -350,13 +349,13 @@ Editorial - LDIF. (2021, April 19). In Wikipedia. https://de.wikipedia.org/wiki/
 
 Bosswell, W. (2003, October 10). ObjectClasses queried 3. May 2021, from https://www.informit.com/articles/article.aspx?p=101405&seqNum=7#:~:text=Domain%20Component%20(DC).,%3DCompany%2Cdc%3Dcom.
 
-Wilson, N. (No datum availabel). The LDAP Bind Operation queried 3. May 2021, from https://ldap.com/the-ldap-bind-operation/
+Wilson, N. (No datum available). The LDAP Bind Operation queried 3. May 2021, from https://ldap.com/the-ldap-bind-operation/
 
 Anonym (2019, September 3). LDAP Wiki 3. May 2021, from https://ldapwiki.com/wiki
 
 ZyTrax Inc. (2019, February 19). LDAP Concepts & Overview 7. May 2021, from http://www.zytrax.com/books/ldap/ch2/
 
-Föckeler, P. (No datum availabel). Das LDAP Scripting Tutorial queried 10. May 2021, from http://www.selfadsi.de/ldap-filter.htm
+Föckeler, P. (No datum available). Das LDAP Scripting Tutorial queried 10. May 2021, from http://www.selfadsi.de/ldap-filter.htm
 
 Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from https://www.openldap.org/doc/admin25/
 
@@ -366,18 +365,23 @@ Open LDAP Foundation. (2021, February 26). OpenLDAP queried 10. May 2021, from h
 #### 2.2.1 Browse an existing LDAP Server
 
 ##### 2.2.1.1 No Authentication vs. Authentication?
-When you are authenticated on the LDPA-server, you can see all datas which belongs to your user. When you are not authenticated you can also see all datas with the exception of the ```matrikelNr```.
+When you are authenticated on the LDPA-server, you can see all data which belongs to your user. When you are not authenticated you can also see all data with the exception of the ```matrikelNr```.
 
 
 #### 2.2.2 Set up an OpenLdap server
 First we need to install several packages on our server:
-```bash
+```
 $ apt install slapd ldap-utils dialog
 ```
-To reconfigure ```slapd``` we need to type ```$ dpkg-reconfigure slapd```.
+To reconfigure ```slapd``` we need to type 
+```
+$ dpkg-reconfigure slapd
+```
+```DNS-Domainname: sdi3a.mi.hdm-stuttgart.de```
+
 
 #### 2.2.3 Populating your DIT
-After add all entrys in our tree, it look like the following:
+After add all entry's in our tree, it look like the following:
 ```
 version: 1
 
@@ -539,7 +543,7 @@ $ apt-get install libpam-ldapd
 ```
 After the installation a window will open, where we can configure the package.
 
-In the following window we need to enter the hostname to our arctive directories.
+In the following window we need to enter the hostname to our active directories.
 ![alt text](images/pam1.png "Screenshot")
 
 After that we need to enter the distinguished name.
@@ -547,7 +551,7 @@ After that we need to enter the distinguished name.
 
 ![alt text](images/pam3.png "Screenshot")
 
-After the configuration the installation of the package will be finished and we need to reboot the VM.
+After the configuration the installation of the package will be finished and we need to reboot our server.
 
 After that we can run request
 ```
@@ -556,7 +560,7 @@ uid=42(daniel) gid=1337 Gruppen=1337
 ```
 
 In the last step we need to create a user and a group accordingly, which we need to assign to the user:
-```bash
+```
 $ groupadd -g 1337 betrayer_software_devel
 $ useradd -u 42 daniel
 $ usermod -g betrayer_software_devel daniel
@@ -567,56 +571,63 @@ $ mkhomedir_helper daniel
 #### 2.2.10 Backup and recovery / restore
 
 Create a backup of the OpenLDAP database configuration to an LDIF file. 
-```bash
+```
 $ slapcat -b cn=config -l ldap-config.ldif
 ```
 
 Create a backup of the OpenLDAP data. 
-```bash 
+```
 $ slapcat -l ldap-data.ldif
 ```
 
 Copy the data and configuration backup from the OpenLDAP provider server to the OpenLDAP consumer server. 
-```bash 
+```
 $ scp {ldap-data.ldif,ldap-config.ldif} root@sdi3b.mi.hdm-stuttgart.de:
 ```
 
 Now we need to access our consumer server via ssh.
-```bash
+```
 $ ssh root@sdi3b.mi.hdm-stuttgart.de
 ```
 
 Restore the OpenLDAP provider Data and configs on the consumer server.
 Stop the LDAP service.
-```bash 
+```
 $ systemctl stop slapd
 ```
 
 Ensure that the LDAP configuration and data directories are empty.
-```bash 
+```
 $ rm -rf /etc/ldap/slapd.d/* 
 $ rm -rf /var/lib/ldap/*
 ```
 
 Restore the configuration backup. 
-```bash
+```
 $ slapadd -b cn=config -l /root/ldap-config.ldif -F /etc/ldap/slapd.d/
 ```
 
 Restore the LDAP data directories. 
-```bash
+```
 $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 ```
 
 #### 2.2.11 Accessing LDAP by a Pyhton application.
+Please find the ```application``` and the associated ```README.md``` in the Python directory. 
+
+The following frameworks were used:
+```
 https://www.python-ldap.org/en/python-ldap-3.3.0/
+```
+```
 https://github.com/python-ldap/python-ldap
+```
 
 ## 3. Apache Web Server
 
 ### 3.1 Exercises
 For the following tasks we need the package ```apache2```, which we can install with the following command:
-```bash
+```
 $ aptitude install apache2
 ```
 
@@ -638,28 +649,28 @@ Now we can se an empty table and below that we find the version of our Apache Se
   ```
 
   4. In the next step we install the apache2 documentation with the following command:
-   ``` bash
+   ```
    $ apt install apache2-doc
    ```
    In our case we can find all related files from the packe ```apache2-doc```:
-   ```bash
+   ```
    $ dpkg -L apache2-doc
    ```
    The result is a huge list of file which all belongs to the following path: ```/usr/share/doc/apache2-doc/manual/```
 
   5. In the last task we want to host our documentation on our web server. But first we need to convert our .md to valid .html, which can be done with the pandoc package:
-   ```bash
-  $ pandoc -s -o index.html Software\ Defined\ Infrastructure.md
+   ```
+  $ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md
   ``` 
 
   We want to store the index.html later in ```home/sdidoc``` so we need to create this directroy:
-  ```bash
+  ```
   $ cd /home
   $ mkdir sdidoc
   ```
 
   After that we can transfer our file from the local machine to our hdm vm:
-  ```bash
+  ```
   $ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
   ```
 
@@ -751,13 +762,13 @@ $ scp root@sdi3a.mi.hdm-stuttgart.de:/root/ssl-cert/rootCA.pem /home/user/certif
 Now we can import the CA certificate into our Firefox browser.
 
 In the next step we need to create a certificate for our webpage (device). We starting again with the key:
-```bash
+```
 $ openssl genrsa -out device.key 2048
 ```
 
 Now we can create our device certificate:
 
-```bash
+```
 $ openssl req -new -key device.key -out device.csr
 ```
 
@@ -768,7 +779,7 @@ Common Name (eg, YOUR name) []: 141.62.75.103
 ```
 
 So that we have our CA and the device certificate we are able to sign it:
-```bash
+```
 openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 500 -sha256
 ```
 
@@ -806,7 +817,7 @@ systemctl restart apache2.service
 For this exercises we use our user "daniel" from 2.2.9 LDAP based user login.
 
 To use LDAP with Apache Web Server, we need to enable it:
-```bash
+```
 $ a2enmod authnz_ldap
 ```
 
@@ -844,11 +855,212 @@ Now it should be possible to enter ```https://141.62.75.103/test``` in our brows
 
 ### 3.1.4 Mysql™ database administration
 
-To install MySQL, php and phpMyadmin we can use:
-```bash
-$ apt install mysql-server php phpmyadmin
+To install ```mysql-server``` use:
+```
+$ apt install default-mysql-server
 ```
 
+After facing a issue with LXC Container we need to adjust the config ```/etc/systemd/system/mariadb.service.d/lxc.conf```:
 
+```
+[Service]
+ProtectHome=false
+ProtectSystem=false
 
-<!-- TODO FileCloud letztes Thema! -->
+# These settings turned out to not be necessary in my case, but YMMV
+#PrivateTmp=false
+#PrivateNetwork=false
+PrivateDevices=false
+```
+
+And run the follwing commands:
+```
+$ systemctl daemon-reload
+$ systemctl restart mariadb
+```
+To install ```php``` just run:
+```
+$ apt install php
+```
+
+To install phpMyadmin we must use a buster backport becuase apt didn't know any package with the name ```phpmyadmin```:
+For this we need to create a apt source file ```/etc/apt/sources.list.d/buster-backports.list``` and add:
+```
+deb http://deb.debian.org/debian buster-backports main
+```
+
+Now we need to refresh the package cache and install ```php-twig```:
+```
+$ apt-get update
+$ apt-get install -t buster-backports php-twig
+```
+
+And finally we can install ```phpMyAdmin```:
+```
+$ apt-get install -t buster-backports phpmyadmin
+```
+During the installation a dialog should open up:
+![alt text](images/phpmyadmin1.png "Screenshot")
+
+![alt text](images/phpmyadmin2.png "Screenshot")
+
+![alt text](images/phpmyadmin3.png "Screenshot")
+
+Now we need to create a user with which we can log in:
+```
+$ mariadb
+
+> CREATE USER 'phpmyadminuser'@'localhost' IDENTIFIED BY 'test1';
+```
+
+And restart Apach2:
+
+```
+$ systemctl restart apache2.service
+```
+
+Now we can open the following domain and login ```http://sdi3a.mi.hdm-stuttgart.de/phpmyadmin/index.php```:
+![alt text](images/phpmyadmin4.png "Screenshot")
+
+### 3.1.5 Providing WEB based user management to your LDAP Servern
+
+To install the LDAP Account Manager we need to download it and forward it to the server via ```scp``` because ```ldap-account-manager``` isn't availabel via the official ```apt``` repositorys:
+
+```https://sourceforge.net/projects/lam/```
+```
+$ scp /home/user/Downloads/ldap-account-manager_7.6-1_all.deb root@sdi3a.mi.hdm-stuttgart.de:/home/
+```
+
+And install it with ```apt```:
+```
+$ apt install /home/ldap-account-manager_7.6-1_all.deb
+```
+
+Now we can configure the LDAP Account Manager ```http://sdi3a.mi.hdm-stuttgart.de/lam/templates/config/index.php```.
+The default master password for ```Edit general settings``` is ```lam``` and should be changed to something secure.
+
+The password for ```Edit server profiles``` is also lam.
+Here we can can edit ```TLS``` and a ```List of valid users```:
+![alt text](images/lam1.png "Screenshot")
+![alt text](images/lam2.png "Screenshot")
+
+After saving this settings we are able to so the our user:
+![alt text](images/lam3.png "Screenshot")
+
+### 3.1.6 Publish your documentation
+
+Our documentation is written as a .md-file, so we need to convert it with pandoc into a valid .html-file:
+   ```bash
+  $ pandoc --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html doku.md
+  ``` 
+
+Now we transfer the .html-file to our server, which can be done with ```scp```:
+```
+$ scp index.html root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/ 
+```
+
+We doesn't use rsync because we anyway need to convert our file with pandoc to get an actual version. But if you want to use rsync the caommand would be:
+```
+$ rsync -avz -e ssh root@sdi3a.mi.hdm-stuttgart.de:/home/sdidoc/
+```
+
+We can adjust the .conf-file ```etc/apache2/apache2.conf/``` and and add:
+```
+<Directory /home/sdidoc/>
+        AllowOverride None
+        Require all granted
+        Options Indexes FollowSymLinks
+</Directory>
+
+Alias /doc /home/sdidoc/
+```
+
+Now we can query ```http://sdi3a.mi.hdm-stuttgart.de/doc/```.
+<!-- TODO Docu publishen -->
+
+## 4. Apache Web Server
+
+### 4.1 Exercises
+
+#### 4.1.1 Setup Nextcloud with Apache Web Server
+
+First we need to install packages for apache, mariadb and php:
+
+```
+$ apt install vim unzip
+$ apt install apache2 mariadb-server libapache2-mod-php
+$ apt install php-gd php-json php-mysql php-curl
+$ apt install php-intl php-mcrypt php-imagick
+$ apt install php-zip php-xmlwriter php-xmlreader php-xml php-mbstring php-simplexml
+```
+
+We need another user for our nextcloud in our databse:
+```
+$ mariadb
+> CREATE USER 'ncadmin'@'localhost' IDENTIFIED BY 'test1';
+> CREATE DATABASE IF NOT EXISTS nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+> GRANT ALL PRIVILEGES ON nextcloud.* TO 'ncadmin'@'localhost';
+> FLUSH PRIVILEGES;
+> quit;
+```
+
+In the next step we download nextcloud and move it to ```/var/www```:
+```
+$ wget https://download.nextcloud.com/server/releases/latest.zip
+$ unzip latest.zip
+$ mv nextcloud/ /var/www
+```
+
+Add the follwing lines to ```/etc/apache2/apache2.conf```:
+```
+<Directory /var/www/nextcloud/>
+Require all granted
+AllowOverride All
+Options FollowSymLinks MultiViews
+</Directory>
+Alias /nextcloud "/var/www/nextcloud/"
+```
+
+Give apache2 the permission on the folder:
+```$ chown -R www-data /var/www/nextcloud/```
+
+Enable the follwing modules and restart apache2:
+```
+$ a2enmod rewrite
+$ a2enmod headers
+$ a2enmod env
+$ a2enmod dir
+$ a2enmod mime
+
+$ systemctl restart apache2.service
+```
+
+Now we can open in our browser ```sdi3a.mi.hdm-stuttgart.de/nextcloud``` which should look like the following:
+
+![alt text](images/nextcloud1.png "Screenshot")
+
+To finish the installation type in the necessary data and click ```Installation abschließen```.
+```
+User = "admin"
+Password = "test1"
+
+Database-User = "ncadmin"
+Database-User = "test1"
+Database-Name = "nextcloud"
+```
+
+After we waiting a bit we can enter again ```sdi3a.mi.hdm-stuttgart.de/nextcloud``` and now it should look like the screenshot below:
+![alt text](images/nextcloud2.png "Screenshot")
+
+#### 4.1.2 User authentication with LDAP
+
+To enable ldap support click on Icon in right top corner then go to ```Apps```:
+![alt text](images/ncldap1.png "Screenshot")
+
+Search for the module ```LDAP user and group backend``` and enable it:
+![alt text](images/ncldap2.png "Screenshot")
+
+Now we can configure ldap under settings and ```LDAP/AD-Integration```:
+![alt text](images/ncldap3.png "Screenshot")
+![alt text](images/ncldap4.png "Screenshot")
+![alt text](images/ncldap5.png "Screenshot")
