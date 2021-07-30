@@ -262,7 +262,7 @@ Address:	127.0.0.53#53
 
 "The Lightweight Directory Access Protocol can be used for querying and modifying information from distributed directory services."
 
-The difference between these two protocols are the encryption. LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted and decrypted via START TLS and running on the default port 389.
+The difference between these two protocols are the encryption. LDAPS is encrypted via SSL and running on the default port 636, LDAP is encrypted or decrypted via START TLS and running on the default port 389.
 ("Editorial - LDAP", 2021)
 
 #### What does the acronym dc in dc=somedomain, dc=org stand for?
@@ -338,7 +338,7 @@ Not: (! (...K1...) (...K2...) (...K3...) (...K4...))
 
 ##### What does the term “database backend” refer to with respect to OpenLDAP server implementation?
 
-Backend do the actual work of storing or retrieving data in response to LDAP requests. Backend may be compiled statically into slapd, or when module support is enabled, they may be dynamically loaded (Open LDAP Foundation, 2021).
+Backend does the actual work of storing or retrieving data in response to LDAP requests. Backend may be compiled statically into `slapd`, or when module support is enabled, they may be dynamically loaded (Open LDAP Foundation, 2021).
 
 ##### Why is LDAP replication important?
 
@@ -512,7 +512,7 @@ All users entries within the whole `DIT` having a `gidNumber` value of 100:
 
 ![](images/gidNumber_equal_100.png "Screenshot")
 
-All users entries within the whole DIT having a gidNumber value greater than 1023:
+All users entries within the whole `DIT` having a `gidNumber` value greater than 1023:
 
 ![](images/gidNumber_greater_than_1023.png "Screenshot")
 
@@ -601,7 +601,7 @@ $ mkhomedir_helper daniel
 
 #### Backup and recovery / restore
 
-Create a backup of the `OpenLDAP` database configuration in an `LDIF-file`.
+Create a backup of the `OpenLDAP` database configuration in a `LDIF-file`.
 
 ```bash
 $ slapcat -b cn=config -l ldap-config.ldif
@@ -705,7 +705,7 @@ $ dpkg -L apache2-doc
 
 The result is a huge list of files which all belong to the following path: `/usr/share/doc/apache2-doc/manual/`
 
-5. In the last task we want to host our documentation on our web server. First of all, we need to convert our .md to valid .html, which can be done with the `Pandoc` package:
+5. In the last task we want to host our documentation on our web server. First, we need to convert our .md to valid .html, which can be done with the `Pandoc` package:
 
 ```
 # docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
@@ -890,7 +890,7 @@ The connection is finally secure:
 
 ### LDAP authentication
 
-For these exercises we use our user "daniel" from 2.2.9 LDAP based user login.
+For these exercises we use our user `"daniel"` from 2.2.9 LDAP based user login.
 
 To use LDAP with Apache Web Server, we need to enable the module `authnz_ldap`:
 
@@ -966,7 +966,7 @@ To install `php` just enter:
 $ apt install php
 ```
 
-To install PhpMyAdmin we used a buster backport because apt didn't know any package with the name `phpmyadmin`:
+To install `PhpMyAdmin` we used a buster backport because apt didn't know any package with the name `phpmyadmin`:
 For this we need to create an apt source file `/etc/apt/sources.list.d/buster-backports.list` and add:
 
 ```plaintext
