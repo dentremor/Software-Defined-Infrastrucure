@@ -126,8 +126,6 @@ zone "75.62.141.in-addr.arpa" {
 //include "/etc/bind/zones.rfc1918";
 ```
 
-#### Configure the zone file
-
 For our zones we need to enable IPv4 in the file `/etc/default/bind9` with the parameter:
 
 ```conf
@@ -667,20 +665,20 @@ The following frameworks are used:
 
 ### Exercises
 
+#### First Steps
+
 For the following tasks we need the package `Apache2`, which we can install with the following command:
 
 ```bash
 $ aptitude install apache2
 ```
 
-### First Steps
+After we install the package, Apache is running per default and in our case it can be queried with `http://sdi3a.mi.hdm-stuttgart.de/`.
 
-1. After we install the package, Apache is running per default and in our case it can be queried with `http://sdi3a.mi.hdm-stuttgart.de/`.
-
-2. When we move the index.html file out of the directory, we can discover another page. For this we need to query the address again.
+When we move the index.html file out of the directory, we can discover another page. For this we need to query the address again.
    Now we can see an empty table and below that we find the version of our Apache Server, the domain where it is hosted and the associated port.
 
-3. In the next step we provide our own simple webpage which looks like the following:
+In the next step we provide our own simple webpage which looks like the following:
 
 ```html
 <!DOCTYPE html>
@@ -691,7 +689,7 @@ $ aptitude install apache2
 </html>
 ```
 
-4. In the next step we install the `Apache2` documentation with the following command:
+In the next step we install the `Apache2` documentation with the following command:
 
 ```bash
 $ apt install apache2-doc
@@ -705,7 +703,7 @@ $ dpkg -L apache2-doc
 
 The result is a huge list of files which all belong to the following path: `/usr/share/doc/apache2-doc/manual/`
 
-5. In the last task we want to host our documentation on our web server. First, we need to convert our .md to valid .html, which can be done with the `Pandoc` package:
+In the last task we want to host our documentation on our web server. First, we need to convert our .md to valid .html, which can be done with the `Pandoc` package:
 
 ```
 # docker run -v "${PWD}:/data:z" pandoc/latex doku.md --number-sections --toc --toc-depth=6 --katex --self-contained -t html5 -o index.html
@@ -741,7 +739,7 @@ To make our change effective we need to restart the Apache web service:
 $ systemctl reload apache2
 ```
 
-### Virtual hosts
+#### Virtual hosts
 
 To realize virtual hosts we need to create a .con file in `/etc/apache2/sites-available`. The config in this file should look like the following:
 
@@ -784,7 +782,7 @@ This can be done by entering the information on our local machine with `# sudo v
 
 To set up the `manual.sdi3a.mi.hdm-stuttgart.de` we can copy our first .conf file, enable it and register the information on localhost.
 
-### SSL / TLS Support
+#### SSL / TLS Support
 
 First, we need to create our private root key with a bit length of 2048:
 
@@ -888,7 +886,7 @@ The connection is finally secure:
 
 ![](images/certificate1.png "Screenshot")
 
-### LDAP authentication
+#### LDAP authentication
 
 For these exercises we use our user `"daniel"` from 2.2.9 LDAP based user login.
 
@@ -932,7 +930,7 @@ $ systemctl restart apache2.service
 
 After that, it should be possible to enter `https://sdi3a.mi.hdm-stuttgart.de/test` in our browser and login.
 
-### Mysql™ database administration
+#### Mysql™ database administration
 
 To install `mysql-server` use:
 
@@ -1012,7 +1010,7 @@ Last but not least, we can open the following domain and login `http://sdi3a.mi.
 
 ![](images/phpmyadmin4.png "Screenshot")
 
-### Providing WEB based user management to your LDAP Server
+#### Providing WEB based user management to your LDAP Server
 
 To install the LDAP Account Manager we need to download it and forward it to the server via `scp` because `ldap-account-manager` isn't available via the official `apt` repositories:
 
@@ -1042,7 +1040,7 @@ After saving these settings we are able to use the user:
 
 ![](images/lam3.png "Screenshot")
 
-### Publish your documentation
+#### Publish your documentation
 
 Our documentation is written as a .md file, so we need to convert it with `Pandoc` into a valid .html file:
 
