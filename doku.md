@@ -667,7 +667,7 @@ The following frameworks are used:
 
 ### Exercises
 
-For the following tasks we need the package `apache2`, which we can install with the following command:
+For the following tasks we need the package `Apache2`, which we can install with the following command:
 
 ```bash
 $ aptitude install apache2
@@ -770,7 +770,7 @@ Add the following instructions to `/etc/apache2/apache2.conf`:
 </Directory>
 ```
 
-Now it is important to grant apache2 the access to the directory where our `index.html` is placed:
+Now it is important to grant `Apache2` the access to the directory where our `index.html` is placed:
 ```bash
 $ chown -R www-data /home/sdidoc
 ```
