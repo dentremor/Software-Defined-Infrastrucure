@@ -1,0 +1,6 @@
+Software Defined Infrastructure Documentation
+Documentation for the Software Defined Infrastructure course at HdM Stuttgart.
+© 2021 Daniel Hiller under AGPL-3.0
+https://github.com/dentremor/Software-Defined-Infrastrucure
+https://github.com/dentremor/Software-Defined-Infrastrucure/releases/latest/download/all.zip
+🚀 Happy administration!

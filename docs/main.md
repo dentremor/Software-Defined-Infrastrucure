@@ -6,6 +6,23 @@
 
 # Software Defined Infrastructure
 
+## Introduction
+
+### Contributing
+
+**Found an error or have a suggestion?** Please open an issue on GitHub ([github.com/dentremor/Software-Defined-Infrastrucure](https://github.com/dentremor/Software-Defined-Infrastrucure)):
+
+![QR code to source repository](./static/qr.png){ width=150px }
+
+### License
+
+![AGPL-3.0 license badge](https://www.gnu.org/graphics/agplv3-155x51.png){ width=128px }
+
+Uni BWL Notes (c) 2021 Daniel Hiller and contributors
+
+SPDX-License-Identifier: AGPL-3.0
+\newpage
+
 ## DNS
 
 ### Querying DNS data
@@ -490,7 +507,7 @@ uid: frederick
 
 #### Testing a bind operation as a non - admin user
 
-![](images/bind_login.png "Screenshot")
+![](static/bind_login.png "Screenshot")
 
 #### Filter based search
 
@@ -508,19 +525,19 @@ All entries with either a defined `uid` attribute or a `ou` attribute starting w
 
 All users entries within the whole `DIT` having a `gidNumber` value of 100:
 
-![](images/gidNumber_equal_100.png "Screenshot")
+![](static/gidNumber_equal_100.png "Screenshot")
 
 All users entries within the whole `DIT` having a `gidNumber` value greater than 1023:
 
-![](images/gidNumber_greater_than_1023.png "Screenshot")
+![](static/gidNumber_greater_than_1023.png "Screenshot")
 
 All users entries within the whole `DIT` having the substring `"ei"` in their `cn` attribute:
 
-![](images/cn_contains_ei.png "Screenshot")
+![](static/cn_contains_ei.png "Screenshot")
 
 All users entries within the whole `DIT` starting with the character "t" in their `uid` attribute or the `gidNumber` is equal to 100:
 
-![](images/last.png "Screenshot")
+![](static/last.png "Screenshot")
 
 #### Extending an existing entry
 
@@ -537,11 +554,11 @@ homeDirectory: /home/daniel
 
 #### Accessing LDAP data by a mail client
 
-![](images/LDAP-Thunderbird.png "Screenshot")
+![](static/LDAP-Thunderbird.png "Screenshot")
 
 #### LDAP configuration
 
-![](images/LDAP-Bind-Authentication.png "Screenshot")
+![](static/LDAP-Bind-Authentication.png "Screenshot")
 
 #### LDAP based user login
 
@@ -571,13 +588,13 @@ After the installation, a window will open where we can configure the package.
 
 In the following window we need to enter the hostname to our active directories.
 
-![](images/pam1.png "Screenshot")
+![](static/pam1.png "Screenshot")
 
 After that, we need to enter the distinguished name.
 
-![](images/pam2.png "Screenshot")
+![](static/pam2.png "Screenshot")
 
-![](images/pam3.png "Screenshot")
+![](static/pam3.png "Screenshot")
 
 After the configuration, the installation of the package will be finished, and we need to reboot our server.
 
@@ -653,13 +670,12 @@ $ slapadd -n 1 -l /root/ldap-data.ldif -F /etc/ldap/slapd.d/
 
 Please find the `application` and the associated `README.md` in the Python directory.
 
-![](images/ldaper9.png "Screenshot")
+![](static/ldaper9.png "Screenshot")
 
 The following frameworks are used:
 
 - https://www.python-ldap.org/en/python-ldap-3.3.0/
 - https://click.palletsprojects.com/en/8.0.x/
-
 
 ## Apache Web Server
 
@@ -676,7 +692,7 @@ $ aptitude install apache2
 After we install the package, Apache is running per default and in our case it can be queried with `http://sdi3a.mi.hdm-stuttgart.de/`.
 
 When we move the index.html file out of the directory, we can discover another page. For this we need to query the address again.
-   Now we can see an empty table and below that we find the version of our Apache Server, the domain where it is hosted and the associated port.
+Now we can see an empty table and below that we find the version of our Apache Server, the domain where it is hosted and the associated port.
 
 In the next step we provide our own simple webpage which looks like the following:
 
@@ -755,9 +771,11 @@ To realize virtual hosts we need to create a .con file in `/etc/apache2/sites-av
 ```
 
 Now the site must be enabled with:
+
 ```bash
 $ a2ensite dh102.conf
 ```
+
 Add the following instructions to `/etc/apache2/apache2.conf`:
 
 ```xml
@@ -769,6 +787,7 @@ Add the following instructions to `/etc/apache2/apache2.conf`:
 ```
 
 Now it is important to grant `Apache2` the access to the directory where our `index.html` is placed:
+
 ```bash
 $ chown -R www-data /home/sdidoc
 ```
@@ -884,7 +903,7 @@ $ systemctl restart apache2.service
 
 The connection is finally secure:
 
-![](images/certificate1.png "Screenshot")
+![](static/certificate1.png "Screenshot")
 
 #### LDAP authentication
 
@@ -986,11 +1005,11 @@ $ apt-get install -t buster-backports phpmyadmin
 
 During the installation a dialog screen should open up:
 
-![](images/phpmyadmin1.png "Screenshot")
+![](static/phpmyadmin1.png "Screenshot")
 
-![](images/phpmyadmin2.png "Screenshot")
+![](static/phpmyadmin2.png "Screenshot")
 
-![](images/phpmyadmin3.png "Screenshot")
+![](static/phpmyadmin3.png "Screenshot")
 
 After that, we need to create a user in our database with which we can log in:
 
@@ -1008,7 +1027,7 @@ $ systemctl restart apache2.service
 
 Last but not least, we can open the following domain and login `http://sdi3a.mi.hdm-stuttgart.de/phpmyadmin/index.php`:
 
-![](images/phpmyadmin4.png "Screenshot")
+![](static/phpmyadmin4.png "Screenshot")
 
 #### Providing WEB based user management to your LDAP Server
 
@@ -1032,13 +1051,13 @@ The default master password for `Edit general settings` is `lam` and should be c
 The password for `Edit server profiles` is also `lam`.
 Here we can edit `TLS` and a `List of valid users`:
 
-![](images/lam1.png "Screenshot")
+![](static/lam1.png "Screenshot")
 
-![](images/lam2.png "Screenshot")
+![](static/lam2.png "Screenshot")
 
 After saving these settings we are able to use the user:
 
-![](images/lam3.png "Screenshot")
+![](static/lam3.png "Screenshot")
 
 #### Publish your documentation
 
@@ -1121,6 +1140,7 @@ Alias /nextcloud "/var/www/nextcloud/"
 ```
 
 Give `Apache2` the permissions on the folder:
+
 ```bash
 $ chown -R www-data /var/www/nextcloud/
 ```
@@ -1138,7 +1158,7 @@ $ systemctl restart apache2.service
 
 Now we can open `sdi3a.mi.hdm-stuttgart.de/nextcloud` in our browser which should look like the following:
 
-![](images/nextcloud1.png "Screenshot")
+![](static/nextcloud1.png "Screenshot")
 
 Finish the installation type in the necessary data and click `Installation abschließen`.
 
@@ -1153,22 +1173,22 @@ Database-Name = "nextcloud"
 
 After we're waiting a bit we can enter `sdi3a.mi.hdm-stuttgart.de/nextcloud` again. Finally, it should look like in the screenshot below:
 
-![](images/nextcloud2.png "Screenshot")
+![](static/nextcloud2.png "Screenshot")
 
 #### User authentication with LDAP
 
 To enable LDAP support click on Icon in the right top corner and navigate to `Apps`:
 
-![](images/ncldap1.png "Screenshot")
+![](static/ncldap1.png "Screenshot")
 
 Search for the module `LDAP user and group backend` and enable it:
 
-![](images/ncldap2.png "Screenshot")
+![](static/ncldap2.png "Screenshot")
 
 Under settings and `LDAP/AD-Integration` we can configure LDAP like this:
 
-![](images/ncldap3.png "Screenshot")
+![](static/ncldap3.png "Screenshot")
 
-![](images/ncldap4.png "Screenshot")
+![](static/ncldap4.png "Screenshot")
 
-![](images/ncldap5.png "Screenshot")
+![](static/ncldap5.png "Screenshot")
