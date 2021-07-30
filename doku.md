@@ -798,7 +798,7 @@ For security reasons we should encrypt our key:
 $ openssl genrsa -des3 -out rootCA.key 2048
 ```
 
-With our `rootCA.key` we can now self-sign a certificate:
+With our `rootCA.key` we can now self-sign this certificate:
 
 ```bash
 $ openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem
@@ -1029,9 +1029,9 @@ $ apt install /home/ldap-account-manager_7.6-1_all.deb
 ```
 
 Now we can configure the LDAP Account Manager `http://sdi3a.mi.hdm-stuttgart.de/lam/templates/config/index.php`.
-The default master password for `Edit general settings` is `Iam` and should be changed to something secure.
+The default master password for `Edit general settings` is `lam` and should be changed to something secure.
 
-The password for `Edit server profiles` is also `Iam`.
+The password for `Edit server profiles` is also `lam`.
 Here we can edit `TLS` and a `List of valid users`:
 
 ![](images/lam1.png "Screenshot")
