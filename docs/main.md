@@ -18,7 +18,7 @@
 
 ![AGPL-3.0 license badge](https://www.gnu.org/graphics/agplv3-155x51.png){ width=128px }
 
-Uni BWL Notes (c) 2021 Daniel Hiller and contributors
+Software Defined Infrastructure (c) 2021 Daniel Hiller and contributors
 
 SPDX-License-Identifier: AGPL-3.0
 \newpage
